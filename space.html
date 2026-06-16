@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA GCSE Combined Science: Lunar Flight Deck</title>
+    <style>
+        body {
+            background-color: #080911;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .mission-map {
+            width: 90%;
+            max-width: 800px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid #2c3e50;
+            border-radius: 50px;
+            position: relative;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
+        }
+
+        .celestial-body {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .celestial-body span {
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-top: 2px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #earth { left: 25px; }
+        #moon { right: 25px; }
+
+        #rocket {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            font-size: 40px;
+            transition: left 1s cubic-bezier(0.25, 0.1, 0.25, 1);
+            filter: drop-shadow(0 0 12px #f39c12);
+        }
+
+        .quiz-container {
+            background-color: #111424;
+            border: 2px solid #34495e;
+            border-radius: 16px;
+            padding: 30px;
+            width: 90%;
+            max-width: 650px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            box-sizing: border-box;
+        }
+
+        .subject-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+        }
+
+        .biology { background-color: #27ae60; color: white; box-shadow: 0 0 10px rgba(39,174,96,0.3); }
+        .chemistry { background-color: #d35400; color: white; box-shadow: 0 0 10px rgba(211,84,0,0.3); }
+        .physics { background-color: #2980b9; color: white; box-shadow: 0 0 10px rgba(41,128,185,0.3); }
+
+        #question-text {
+            font-size: 20px;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background-color: #1b203a;
+            color: #ecf0f1;
+            border: 2px solid #2c3e50;
+            padding: 16px;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background-color: #242b4d;
+            border-color: #3498db;
+            transform: translateY(-2px);
+        }
+
+        .correct-flash { background-color: #27ae60 !important; border-color: #2ecc71 !important; color: white; }
+        .wrong-flash { background-color: #c0392b !important; border-color: #e74c3c !important; color: white; }
+
+        .hidden { display: none !important; }
+
+        .input-screen {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #34495e;
+            background-color: #0c0e1a;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .action-btn:hover {
+            filter: brightness(1.1);
+        }
+
+        .boarding-pass {
+            background: linear-gradient(135deg, #eef2f3 0%, #8e9eab 100%);
+            color: #1e272c;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: left;
+            position: relative;
+            border-left: 10px dashed #2980b9;
+        }
+
+        .pass-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 2px solid #7f8c8d;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+
+        .pass-title {
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2c3e50;
+        }
+
+        .pass-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .pass-field {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #7f8c8d;
+            font-weight: bold;
+        }
+
+        .pass-value {
+            font-size: 16px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-top: 2px;
+        }
+
+        .stamp {
+            position: absolute;
+            right: 25px;
+            bottom: 20px;
+            border: 4px double #27ae60;
+            color: #27ae60;
+            padding: 5px 15px;
+            font-size: 14px;
+            font-weight: 900;
+            transform: rotate(-10deg);
+            border-radius: 5px;
+            text-transform: uppercase;
+        }
+
+        .print-btn {
+            background-color: #27ae60;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            .boarding-pass, .boarding-pass * { visibility: visible; }
+            .boarding-pass { position: absolute; left: 0; top: 0; width: 100%; box-shadow: none; }
+            .print-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mission-map">
+        <div id="earth" class="celestial-body">🌍<span>Earth</span></div>
+        <div id="rocket">🚀</div>
+        <div id="moon" class="celestial-body">🌕<span>Moon</span></div>
+    </div>
+
+    <div class="quiz-container">
+        <!-- Name Screen -->
+        <div id="name-screen" class="input-screen">
+            <h2>Astronaut Manifest Registration</h2>
+            <p style="color: #a0a5aa; margin-bottom: 25px;">Enter your name to initialise the Orion Capsule flight computer.</p>
+            <input type="text" id="pupil-name" placeholder="Enter Cadet Name Here" maxlength="25" autocomplete="off">
+            <br>
+            <button class="action-btn" onclick="startMission()">Initialise Launch</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div id="subject-tag" class="subject-badge">Subject</div>
+            <div id="question-text">Loading question vector...</div>
+            <div class="options-grid" id="options-box"></div>
+        </div>
+
+        <!-- Victory Screen -->
+        <div id="victory-screen" class="hidden" style="text-align: center;">
+            <h2 style="color: #2ecc71; margin-top: 0;">🎉 Lunar Orbit Insertion Successful!</h2>
+            <p style="color: #bdc3c7; margin-bottom: 25px;">Your science data calculations were flawless. Here is your official flight certificate:</p>
+            
+            <div class="boarding-pass" id="printable-pass">
+                <div class="pass-header">
+                    <div class="pass-title">NASA Artemis Flight Deck Pass</div>
+                    <div style="font-weight: bold; color: #2980b9;">MISSION: SUCCESS</div>
+                </div>
+                <div class="pass-grid">
+                    <div>
+                        <div class="pass-field">Astronaut Name</div>
+                        <div class="pass-value" id="pass-name">Cadet Name</div>
+                    </div>
+                    <div>
+                        <div class="pass-field">Destination Target</div>
+                        <div class="pass-value">Luna (Orbit Sector 4)</div>
+                    </div>
+                    <div>
+                        <div class="pass-field">Syllabus Cleared</div>
+                        <div class="pass-value" style="font-size: 13px;">AQA Combined Science</div>
+                    </div>
+                    <div>
+                        <div class="pass-field">Status Code</div>
+                        <div class="pass-value" style="font-family: monospace;">FLIGHT-2026A</div>
+                    </div>
+                </div>
+                <div class="stamp">Approved</div>
+            </div>
+
+            <button class="action-btn print-btn" onclick="window.print()">Print Boarding Pass</button>
+        </div>
+    </div>
+
+<script>
+// Question Database
+const masterQuestionPool = [
+    { subject: "biology", module: "Cell Structure", question: "Which type of microscope is required to see internal organelle substructures like ribosomes?", options: ["Electron Microscope", "Light Microscope", "Stereo Microscope", "Digital Magnifier"], correct: 0 },
+    { subject: "biology", module: "Infection & Response", question: "Which type of pathogen causes Tobacco Mosaic Virus (TMV) in plants?", options: ["Bacterium", "Virus", "Fungus", "Protist"], correct: 1 },
+    { subject: "biology", module: "Bioenergetics", question: "What type of chemical reaction is photosynthesis, which absorbs light energy from the surroundings?", options: ["Exothermic Reaction", "Endothermic Reaction", "Combustion Reaction", "Displacement Reaction"], correct: 1 },
+    { subject: "chemistry", module: "Atomic Structure", question: "What is the correct mass number and electrical charge of a fundamental neutron?", options: ["Mass = 1, Charge = 0", "Mass = 0, Charge = -1", "Mass = 1, Charge = +1", "Mass = 0, Charge = 0"], correct: 0 },
+    { subject: "chemistry", module: "Quantitative Chemistry", question: "What standard unit value represents Avogadro's constant of chemical particles in one mole?", options: ["6.02 x 10^23", "3.00 x 10^8", "9.81 x 10^1", "1.66 x 10^-24"], correct: 0 },
+    { subject: "chemistry", module: "Energy Changes", question: "If a chemical reaction profile shows that the products have less energy than the reactants, what type of reaction is it?", options: ["Endothermic", "Exothermic", "Thermal Decomposition", "Electrolysis"], correct: 1 },
+    { subject: "physics", module: "Energy Systems", question: "What is the main format of wasted energy dissipated by mechanical gears due to friction?", options: ["Thermal Energy", "Chemical Energy", "Elastic Potential", "Nuclear Kinetic"], correct: 0 },
+    { subject: "physics", module: "Electricity", question: "How does the electrical resistance of an ideal Light Dependent Resistor (LDR) react as light intensity drops?", options: ["Resistance Increases", "Resistance Decreases", "Resistance Stays Constant", "Resistance Fluctuates to Zero"], correct: 0 },
+    { subject: "physics", module: "Radioactivity", question: "What structural particle does a radioactive atomic nucleus emit during a typical Alpha decay event?", options: ["A Helium Nucleus", "A High Speed Electron", "A High Energy Photon", "A Single Positron"], correct: 0 }
+];
+
+let activeMissionDeck = [];
+let currentStep = 0;
+let pilotIdentity = "";
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function startMission() {
+    const inputField = document.getElementById('pupil-name');
+    pilotIdentity = inputField.value.trim();
+    
+    if (pilotIdentity === "") {
+        alert("Flight security error: Please declare your Cadet Name before engine ignition.");
+        return;
+    }
+
+    activeMissionDeck = shuffleArray([...masterQuestionPool]);
+    currentStep = 0;
+
+    document.getElementById('name-screen').classList.add('hidden');
+    document.getElementById('quiz-screen').classList.remove('hidden');
+    
+    renderActiveQuestion();
+}
+
+function renderActiveQuestion() {
+    if (currentStep >= activeMissionDeck.length) {
+        concludeMission();
+        return;
+    }
+
+    const data = activeMissionDeck[currentStep];
+    const progress = (currentStep / activeMissionDeck.length) * 65 + 10;
+    
+    document.getElementById('rocket').style.left = `${progress}%`;
+
+    // Subject badge
+    const tag = document.getElementById('subject-tag');
+    tag.textContent = `${data.subject.toUpperCase()} | ${data.module}`;
+    tag.className = `subject-badge ${data.subject}`;
+
+    document.getElementById('question-text').textContent = data.question;
+
+    // Options
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = '';
+
+    data.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.textContent = option;
+        btn.onclick = () => processAnswerSelection(index, btn);
+        optionsBox.appendChild(btn);
+    });
+}
+
+function processAnswerSelection(selectedIndex, clickedButton) {
+    const data = activeMissionDeck[currentStep];
+    const buttons = document.querySelectorAll('.option-btn');
+    buttons.forEach(b => b.disabled = true); // Prevent multiple clicks
+
+    if (selectedIndex === data.correct) {
+        clickedButton.classList.add('correct-flash');
+        setTimeout(() => {
+            currentStep++;
+            renderActiveQuestion();
+        }, 800);
+    } else {
+        clickedButton.classList.add('wrong-flash');
+        setTimeout(() => {
+            alert(`Systems alert: Incorrect telemetry calculation.\n\nReview the ${data.subject.toUpperCase()} - ${data.module} module and try again.`);
+            // Re-enable buttons for retry
+            buttons.forEach(b => b.disabled = false);
+        }, 400);
+    }
+}
+
+function concludeMission() {
+    document.getElementById('rocket').style.left = '75%';
+    document.getElementById('quiz-screen').classList.add('hidden');
+    document.getElementById('victory-screen').classList.remove('hidden');
+    document.getElementById('pass-name').textContent = pilotIdentity;
+}
+</script>
+</body>
+</html>
