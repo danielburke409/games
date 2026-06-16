@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AQA Specific Heat Capacity Lab Challenge</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #game-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+            width: 100%;
+            max-width: 680px;
+            padding: 30px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            border-bottom: 4px solid var(--primary);
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        h1 { margin: 0; font-size: 26px; color: var(--primary); }
+        h2 { margin: 8px 0 0 0; font-size: 15px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1.5px; }
+
+        #progress-bar-container {
+            background: #ddd;
+            height: 10px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            background: linear-gradient(90deg, var(--accent), #2980b9);
+            height: 100%;
+            width: 25%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #visual-box {
+            background: #2c3e50;
+            height: 180px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.4);
+        }
+
+        .block-graphic {
+            width: 110px;
+            height: 110px;
+            background: linear-gradient(#95a5a6, #7f8c8d);
+            border: 5px solid #34495e;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.6s ease;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+        }
+
+        .insulation-layer { border: 12px dashed #f1c40f; padding: 8px; border-radius: 16px; }
+
+        .thermometer {
+            width: 8px; height: 65px; background: linear-gradient(#e74c3c, #c0392b);
+            position: absolute; top: -28px; left: 38px; border-radius: 4px;
+        }
+
+        .water-drop {
+            width: 10px; height: 10px; background: #3498db; border-radius: 50%;
+            position: absolute; top: 28px; left: 37px; opacity: 0;
+            box-shadow: 0 2px 6px rgba(52, 152, 219, 0.6);
+            transition: opacity 0.6s ease;
+        }
+
+        #temp-display {
+            position: absolute; bottom: -22px; font-size: 15px; font-weight: bold;
+            color: #ecf0f1; text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+        }
+
+        #prompt-text {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .equation {
+            background: #f0f0f0;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 15px;
+            margin: 8px 0;
+            display: inline-block;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-option {
+            background: #f8f9fa;
+            border: 3px solid #dcdde1;
+            padding: 14px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 15.5px;
+            transition: all 0.25s ease;
+        }
+
+        .btn-option:hover {
+            background: #f39c12;
+            border-color: #e67e22;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        #sort-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        #sort-list li {
+            background: #f8f9fa;
+            border: 2px solid #bdc3c7;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        #sort-list li:hover { background: #fff; border-color: #3498db; }
+        #sort-list li:active { cursor: grabbing; }
+
+        .correct-order { 
+            border-color: var(--success) !important; 
+            background: #d4edda !important; 
+        }
+
+        #feedback-box {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.5;
+        }
+
+        .feedback-correct { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback-wrong { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        #next-btn, #check-sort-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #check-sort-btn { background: #27ae60; color: white; }
+        #next-btn { background: linear-gradient(90deg, var(--primary), #34495e); color: white; }
+    </style>
+</head>
+<body>
+
+<div id="game-card">
+    <div class="header">
+        <h1>Specific Heat Capacity Challenge</h1>
+        <h2>AQA GCSE Required Practical 1</h2>
+    </div>
+
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="visual-box">
+        <div id="insulation-wrapper">
+            <div id="metal-block" class="block-graphic">
+                <div class="thermometer"></div>
+                <div id="water-visual" class="water-drop"></div>
+                <span id="temp-display">20°C</span>
+            </div>
+        </div>
+    </div>
+
+    <div id="prompt-text">Loading experimental setup...</div>
+    <div class="options-container" id="options-box"></div>
+    
+    <div id="feedback-box"></div>
+    <button id="next-btn" onclick="advanceStage()">Continue to Next Stage →</button>
+</div>
+
+<script>
+    let useJouleMeter = false;
+    let currentStageIndex = 0;
+    let incorrectAttempts = 0;
+
+    const stages = [
+        {
+            title: "Equipment Selection",
+            question: "Which method will you use to measure energy transferred?",
+            options: [
+                { text: "Ammeter and Voltmeter (calculate E = VIt)", correct: true, joule: false },
+                { text: "Joulemeter (direct reading)", correct: true, joule: true }
+            ],
+            correctFeedback: "Equipment chosen.",
+            action: (choice) => { useJouleMeter = choice.joule; }
+        },
+        {
+            title: "Step 1: Measuring Mass",
+            question: "You place the metal block on the digital balance. What must you do first to avoid a zero error (systematic error)?",
+            options: [
+                { text: "Tare / zero the balance with nothing on it.", correct: true },
+                { text: "Calibrate using a known 1 kg mass.", correct: false },
+                { text: "Start measuring immediately.", correct: false }
+            ],
+            correctFeedback: "Correct! Zeroing (taring) the balance prevents a systematic zero error.",
+            wrongFeedback: "Zero error is a common systematic error. Always zero the balance before use.",
+        },
+        {
+            title: "Step 2: Minimising Heat Dissipation",
+            question: "How do you reduce thermal energy loss to the surroundings?",
+            options: [
+                { text: "Wrap the metal block tightly in insulating foam.", correct: true },
+                { text: "Use a desktop fan to cool it.", correct: false },
+                { text: "Submerge in ice water.", correct: false }
+            ],
+            correctFeedback: "Excellent! Insulation minimises heat dissipation.",
+            wrongFeedback: "Insulation is the correct method.",
+            action: () => document.getElementById('insulation-wrapper').classList.add('insulation-layer')
+        },
+        {
+            title: "Step 3: Improving Thermal Contact",
+            question: "There is an air gap in the thermometer hole. How do you fix it?",
+            options: [
+                { text: "Leave the air gap.", correct: false },
+                { text: "Add a few drops of water with a pipette.", correct: true },
+                { text: "Fill with sand.", correct: false }
+            ],
+            correctFeedback: "Perfect! Water ensures good thermal contact.",
+            wrongFeedback: "Air gaps cause inaccurate readings.",
+            action: () => document.getElementById('water-visual').style.opacity = '1'
+        },
+        {
+            title: "Step 4: Measuring Energy",
+            question: () => useJouleMeter 
+                ? "Before starting, what must you do with the joulemeter?"
+                : "Power supply readings: Voltage = 12 V, Current = 5 A, Time = 600 s.<br><span class='equation'>E = V × I × t</span>",
+            options: () => useJouleMeter 
+                ? [
+                    { text: "Reset / zero the joulemeter.", correct: true },
+                    { text: "Record the current reading without resetting.", correct: false },
+                    { text: "Calibrate with a known resistor.", correct: false }
+                  ]
+                : [
+                    { text: "60 J", correct: false },
+                    { text: "7,200 J", correct: false },
+                    { text: "36,000 J", correct: true }
+                  ],
+            correctFeedback: () => useJouleMeter 
+                ? "Correct! Always zero the joulemeter before starting to avoid systematic error."
+                : "Correct! 12 × 5 × 600 = 36,000 J.",
+            wrongFeedback: () => useJouleMeter 
+                ? "You must reset the joulemeter to zero at the start." 
+                : "Use the equation E = V × I × t.",
+            action: () => {
+                const tempEl = document.getElementById('temp-display');
+                tempEl.innerText = "29°C";
+                tempEl.style.color = "#e74c3c";
+            }
+        },
+        {
+            title: "Step 5: Calculating Specific Heat Capacity",
+            question: "Mass = 1 kg, temperature rise = 9°C, energy transferred = 36,000 J.<br><span class='equation'>c = E / (m × ΔT)</span>",
+            options: [
+                { text: "4,000 J/kg°C", correct: true },
+                { text: "400 J/kg°C", correct: false },
+                { text: "324,000 J/kg°C", correct: false }
+            ],
+            correctFeedback: "Brilliant! c = 36,000 ÷ (1 × 9) = 4,000 J/kg°C.",
+            wrongFeedback: "Use the equation c = E / (m × ΔT)",
+            action: () => document.getElementById('metal-block').style.background = "linear-gradient(#2ecc71, #27ae60)"
+        },
+        {
+            title: "Final Activity: Order the Method",
+            question: "Drag the statements into the correct order.",
+            isSorting: true,
+            getStatements: () => useJouleMeter ? [
+                "Zero the digital balance and measure the mass of the metal block.",
+                "Insert heater and thermometer, add drops of water for good contact.",
+                "Wrap the block with insulating material.",
+                "Record the initial temperature.",
+                "Reset the joulemeter to zero.",
+                "Switch on the heater and monitor the temperature rise.",
+                "Switch off, record final temperature and joulemeter reading, then calculate c."
+            ] : [
+                "Zero the digital balance and measure the mass of the metal block.",
+                "Insert heater and thermometer, add drops of water for good contact.",
+                "Wrap the block with insulating material.",
+                "Record the initial temperature.",
+                "Connect heater and record voltage and current.",
+                "Switch on for measured time and monitor temperature.",
+                "Switch off, record final temperature, calculate E = VIt and c."
+            ],
+            correctOrder: [0,1,2,3,4,5,6],
+            correctFeedback: "Perfect! You have correctly ordered the full method.",
+            wrongFeedback: "Not quite right. Try again."
+        }
+    ];
+
+    function renderStage() {
+        const stage = stages[currentStageIndex];
+        document.querySelector('h2').innerText = stage.title;
+        document.getElementById('prompt-text').innerHTML = typeof stage.question === 'function' ? stage.question() : stage.question;
+        document.getElementById('progress-bar').style.width = `${Math.round(((currentStageIndex + 1) / stages.length) * 100)}%`;
+
+        const optionsBox = document.getElementById('options-box');
+        optionsBox.innerHTML = '';
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        incorrectAttempts = 0;
+
+        if (stage.isSorting) {
+            renderSortingActivity(stage);
+        } else {
+            const opts = typeof stage.options === 'function' ? stage.options() : stage.options;
+            opts.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-option';
+                btn.innerText = opt.text;
+                btn.onclick = () => {
+                    if (stage.action) stage.action(opt);
+                    evaluateAnswer(opt.correct, stage);
+                };
+                optionsBox.appendChild(btn);
+            });
+        }
+    }
+
+    // Drag & Drop, Sorting, Evaluate, Advance functions (same as previous working version)
+    function renderSortingActivity(stage) {
+        const optionsBox = document.getElementById('options-box');
+        optionsBox.innerHTML = `
+            <ul id="sort-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+            <button id="check-sort-btn" onclick="checkSorting()">Check Order</button>
+        `;
+
+        const list = document.getElementById('sort-list');
+        const statements = typeof stage.getStatements === 'function' ? stage.getStatements() : [];
+        const shuffled = [...statements].sort(() => Math.random() - 0.5);
+
+        shuffled.forEach((text) => {
+            const li = document.createElement('li');
+            li.draggable = true;
+            li.ondragstart = drag;
+            li.innerText = text;
+            li.dataset.index = statements.indexOf(text);
+            list.appendChild(li);
+        });
+    }
+
+    function allowDrop(ev) { ev.preventDefault(); }
+    function drag(ev) { ev.dataTransfer.setData("text", ev.target.dataset.index); }
+
+    function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        const dragged = document.querySelector(`li[data-index="${data}"]`);
+        const target = ev.target.closest('li');
+        if (target && dragged !== target) {
+            const list = document.getElementById('sort-list');
+            list.insertBefore(dragged, target);
+        }
+    }
+
+    function checkSorting() {
+        const stage = stages[currentStageIndex];
+        const listItems = Array.from(document.querySelectorAll('#sort-list li'));
+        const statements = typeof stage.getStatements === 'function' ? stage.getStatements() : [];
+        const currentOrder = listItems.map(item => parseInt(item.dataset.index));
+
+        const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(stage.correctOrder);
+
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.style.display = 'block';
+
+        if (isCorrect) {
+            feedbackBox.className = 'feedback-correct';
+            feedbackBox.innerText = stage.correctFeedback;
+            document.getElementById('next-btn').style.display = 'block';
+            const checkBtn = document.getElementById('check-sort-btn');
+            if (checkBtn) checkBtn.style.display = 'none';
+        } else {
+            incorrectAttempts++;
+            feedbackBox.className = 'feedback-wrong';
+            feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
+
+            if (incorrectAttempts >= 5) {
+                showCorrectOrder(stage);
+            } else {
+                setTimeout(() => feedbackBox.style.display = 'none', 2200);
+            }
+        }
+    }
+
+    function showCorrectOrder(stage) {
+        const list = document.getElementById('sort-list');
+        list.innerHTML = '';
+        const statements = typeof stage.getStatements === 'function' ? stage.getStatements() : [];
+
+        statements.forEach((text, index) => {
+            const li = document.createElement('li');
+            li.innerText = `${index + 1}. ${text}`;
+            li.classList.add('correct-order');
+            list.appendChild(li);
+        });
+
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.className = 'feedback-correct';
+        feedbackBox.innerHTML = `<strong>Correct order:</strong><br><br>` + 
+                               statements.map((s, i) => `${i+1}. ${s}`).join('<br>');
+        feedbackBox.style.display = 'block';
+
+        document.getElementById('next-btn').style.display = 'block';
+        const checkBtn = document.getElementById('check-sort-btn');
+        if (checkBtn) checkBtn.style.display = 'none';
+    }
+
+    function evaluateAnswer(isCorrect, stage) {
+        const feedbackBox = document.getElementById('feedback-box');
+        feedbackBox.style.display = 'block';
+        const buttons = document.querySelectorAll('.btn-option');
+        buttons.forEach(b => b.disabled = true);
+
+        if (isCorrect) {
+            feedbackBox.className = 'feedback-correct';
+            feedbackBox.innerText = typeof stage.correctFeedback === 'function' ? stage.correctFeedback() : stage.correctFeedback;
+            document.getElementById('next-btn').style.display = 'block';
+        } else {
+            feedbackBox.className = 'feedback-wrong';
+            feedbackBox.innerText = typeof stage.wrongFeedback === 'function' ? stage.wrongFeedback() : stage.wrongFeedback;
+            setTimeout(() => buttons.forEach(b => b.disabled = false), 1600);
+        }
+    }
+
+    function advanceStage() {
+        currentStageIndex++;
+        if (currentStageIndex < stages.length) {
+            renderStage();
+        } else {
+            document.getElementById('prompt-text').innerHTML = `<strong style="font-size:22px;color:#2ecc71;">🎉 Challenge Complete!</strong>`;
+            document.getElementById('options-box').innerHTML = `<p style="font-size:15px;color:#555;">Excellent work! You have mastered the AQA Specific Heat Capacity Required Practical.</p>`;
+            document.getElementById('next-btn').style.display = 'none';
+        }
+    }
+
+    // Start the game
+    renderStage();
+</script>
+</body>
+</html>
