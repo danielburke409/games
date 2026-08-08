@@ -23,7 +23,7 @@
       min-height: 100vh;
     }
 
-    #game-card {
+    #name-screen, #game-card {
       background: white;
       border-radius: 16px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.18);
@@ -31,6 +31,32 @@
       max-width: 680px;
       padding: 30px;
       box-sizing: border-box;
+    }
+
+    #name-screen {
+      text-align: center;
+    }
+
+    #name-screen input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    #name-screen button {
+      padding: 12px 30px;
+      margin-top: 15px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      cursor: pointer;
     }
 
     .header {
@@ -174,7 +200,7 @@
     .feedback-correct { background-color: #d4edda; color: #155724; }
     .feedback-wrong { background-color: #f8d7da; color: #721c24; }
 
-    #next-btn, #check-sort-btn, #email-btn {
+    #next-btn, #check-sort-btn, #print-btn {
       margin-top: 15px;
       width: 100%;
       padding: 14px;
@@ -187,7 +213,7 @@
 
     #check-sort-btn { background: #27ae60; }
     #next-btn { background: linear-gradient(90deg, var(--primary), #34495e); }
-    #email-btn { background: #3498db; }
+    #print-btn { background: #8e44ad; }
 
     .summary-item {
       background: #f8f9fa;
@@ -201,61 +227,93 @@
 
     .summary-item strong { color: #c0392b; }
 
-    #email-section {
-      display: none;
-      margin-top: 20px;
-      padding: 15px;
-      background: #f0f7ff;
-      border-radius: 8px;
-    }
-
-    #email-section input {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      font-size: 15px;
-      box-sizing: border-box;
+    /* Print styles - makes the printed page clean */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      #game-card {
+        box-shadow: none;
+        max-width: 100%;
+      }
+      #visual-box, #progress-bar-container, #next-btn, #print-btn, 
+      button, .btn-option, #feedback-box {
+        display: none !important;
+      }
+      .header h2 {
+        display: none;
+      }
     }
   </style>
 </head>
 <body>
 
-<div id="game-card">
-  <div class="header">
-    <h1>Specific Heat Capacity Challenge</h1>
-    <h2>AQA GCSE Required Practical 1</h2>
+  <!-- NAME ENTRY SCREEN -->
+  <div id="name-screen">
+    <h1>Specific Heat Capacity Lab</h1>
+    <p style="color:#7f8c8d;">AQA GCSE Required Practical</p>
+    <br>
+    <input type="text" id="first-name" placeholder="First name">
+    <input type="text" id="surname" placeholder="Surname">
+    <br>
+    <button onclick="startLab()">Start Lab</button>
+    <p id="name-error" style="color:#e74c3c; display:none;">Please enter both names</p>
   </div>
 
-  <div id="progress-bar-container">
-    <div id="progress-bar"></div>
-  </div>
+  <!-- MAIN GAME -->
+  <div id="game-card" style="display:none;">
+    <div class="header">
+      <h1>Specific Heat Capacity Challenge</h1>
+      <h2>AQA GCSE Required Practical 1</h2>
+    </div>
 
-  <div id="visual-box">
-    <div id="insulation-wrapper">
-      <div id="metal-block" class="block-graphic">
-        <div class="thermometer"></div>
-        <div id="water-visual" class="water-drop"></div>
-        <span id="temp-display">20°C</span>
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="visual-box">
+      <div id="insulation-wrapper">
+        <div id="metal-block" class="block-graphic">
+          <div class="thermometer"></div>
+          <div id="water-visual" class="water-drop"></div>
+          <span id="temp-display">20°C</span>
+        </div>
       </div>
     </div>
+
+    <div id="prompt-text">Loading...</div>
+    <div class="options-container" id="options-box"></div>
+    <div id="feedback-box"></div>
+    <button id="next-btn" onclick="advanceStage()" style="display:none;">Continue to Next Stage →</button>
+
+    <div id="summary-section" style="display:none;"></div>
   </div>
 
-  <div id="prompt-text">Loading...</div>
-  <div class="options-container" id="options-box"></div>
-  <div id="feedback-box"></div>
-  <button id="next-btn" onclick="advanceStage()" style="display:none;">Continue to Next Stage →</button>
-
-  <!-- Summary + Email section (hidden until end) -->
-  <div id="summary-section" style="display:none;"></div>
-</div>
-
 <script>
+  let studentFirstName = "";
+  let studentSurname = "";
   let useJouleMeter = false;
   let currentStageIndex = 0;
   let incorrectAttempts = 0;
-  let mistakes = [];   // stores wrong answers
+  let mistakes = [];
+
+  function startLab() {
+    const first = document.getElementById('first-name').value.trim();
+    const surname = document.getElementById('surname').value.trim();
+
+    if (!first || !surname) {
+      document.getElementById('name-error').style.display = 'block';
+      return;
+    }
+
+    studentFirstName = first;
+    studentSurname = surname;
+
+    document.getElementById('name-screen').style.display = 'none';
+    document.getElementById('game-card').style.display = 'block';
+    renderStage();
+  }
 
   const stages = [
     {
@@ -458,7 +516,6 @@
       feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
 
       if (incorrectAttempts >= 5) {
-        // Record the sorting as a mistake
         mistakes.push({
           stage: stage.title,
           correct: "See the correct order shown on screen"
@@ -504,7 +561,6 @@
       feedbackBox.className = 'feedback-wrong';
       feedbackBox.innerText = typeof stage.wrongFeedback === 'function' ? stage.wrongFeedback() : stage.wrongFeedback;
 
-      // Record the mistake
       const correctAns = typeof stage.correctAnswer === 'function' ? stage.correctAnswer() : stage.correctAnswer;
       mistakes.push({
         stage: stage.title,
@@ -531,14 +587,21 @@
     document.getElementById('feedback-box').style.display = 'none';
     document.getElementById('next-btn').style.display = 'none';
     document.getElementById('visual-box').style.display = 'none';
+    document.getElementById('progress-bar-container').style.display = 'none';
 
     const summarySection = document.getElementById('summary-section');
     summarySection.style.display = 'block';
 
-    let html = `<h3 style="margin-top:0;">Your Summary</h3>`;
+    let html = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#2c3e50;">Results Summary</h2>
+        <p style="font-size:18px; margin:8px 0;"><strong>${studentFirstName} ${studentSurname}</strong></p>
+        <p style="color:#7f8c8d; font-size:14px;">AQA Specific Heat Capacity Required Practical</p>
+      </div>
+    `;
 
     if (mistakes.length === 0) {
-      html += `<p style="color:#27ae60; font-size:16px;">Excellent! You answered everything correctly.</p>`;
+      html += `<p style="color:#27ae60; font-size:16px; text-align:center;">Excellent! You answered everything correctly.</p>`;
     } else {
       html += `<p>You made mistakes on the following:</p>`;
       mistakes.forEach(m => {
@@ -552,13 +615,9 @@
     }
 
     html += `
-      <div id="email-section">
-        <p><strong>Would you like a copy of this summary emailed to you?</strong></p>
-        <input type="email" id="student-email" placeholder="Enter your email address">
-        <button id="email-btn" onclick="submitEmail()">Send Summary</button>
-        <p id="email-confirm" style="display:none; color:#27ae60;"></p>
-      </div>
       <br>
+      <button id="print-btn" onclick="window.print()">🖨️ Print Summary</button>
+      <br><br>
       <button onclick="location.reload()" style="padding:10px 20px; background:#7f8c8d; color:white; border:none; border-radius:6px; cursor:pointer;">
         Restart Lab
       </button>
@@ -567,26 +626,7 @@
     summarySection.innerHTML = html;
   }
 
-  function submitEmail() {
-    const email = document.getElementById('student-email').value;
-    const confirm = document.getElementById('email-confirm');
-
-    if (!email || !email.includes('@')) {
-      confirm.style.display = 'block';
-      confirm.style.color = '#e74c3c';
-      confirm.innerText = 'Please enter a valid email address.';
-      return;
-    }
-
-    // For now we just confirm — no real email is sent
-    confirm.style.display = 'block';
-    confirm.style.color = '#27ae60';
-    confirm.innerText = `Thank you! A summary would be sent to ${email} (email feature coming soon).`;
-    document.getElementById('email-btn').style.display = 'none';
-  }
-
-  // Start the lab
-  renderStage();
+  // Start with name screen
 </script>
 </body>
 </html>
