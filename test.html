@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AQA Specific Heat Capacity Lab</title>
+  <title>AQA Physics Required Practicals</title>
   <style>
     :root {
       --primary: #2c3e50;
       --accent: #3498db;
       --success: #2ecc71;
       --danger: #e74c3c;
+      --triple: #9b59b6;
     }
 
     body {
@@ -23,21 +24,20 @@
       min-height: 100vh;
     }
 
-    #name-screen, #game-card {
+    .card {
       background: white;
       border-radius: 16px;
       box-shadow: 0 12px 40px rgba(0,0,0,0.18);
       width: 100%;
-      max-width: 680px;
+      max-width: 720px;
       padding: 30px;
       box-sizing: border-box;
     }
 
-    #name-screen {
-      text-align: center;
-    }
+    h1 { margin: 0 0 8px 0; font-size: 24px; color: var(--primary); text-align: center; }
+    h2 { margin: 0; font-size: 14px; color: #7f8c8d; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
 
-    #name-screen input {
+    input[type="text"] {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
@@ -47,33 +47,67 @@
       box-sizing: border-box;
     }
 
-    #name-screen button {
-      padding: 12px 30px;
-      margin-top: 15px;
-      background: #3498db;
-      color: white;
+    .btn {
+      padding: 12px 24px;
       border: none;
       border-radius: 8px;
       font-weight: bold;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
+      color: white;
     }
 
-    .header {
-      border-bottom: 4px solid var(--primary);
-      padding-bottom: 15px;
-      margin-bottom: 25px;
-      text-align: center;
+    .btn-primary { background: #3498db; }
+    .btn-secondary { background: #7f8c8d; }
+    .btn-print { background: #8e44ad; width: 100%; margin-top: 15px; }
+
+    .practical-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
     }
 
-    h1 { margin: 0; font-size: 24px; color: var(--primary); }
-    h2 { margin: 8px 0 0 0; font-size: 14px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1.5px; }
+    .practical-btn {
+      background: #f8f9fa;
+      border: 2px solid #dcdde1;
+      padding: 14px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .practical-btn:hover {
+      background: #e8f4fd;
+      border-color: #3498db;
+    }
+
+    .practical-btn.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .badge-triple { background: var(--triple); }
+    .badge-coming { background: #95a5a6; }
 
     #progress-bar-container {
       background: #ddd;
       height: 10px;
       border-radius: 6px;
-      margin-bottom: 25px;
+      margin: 20px 0;
       overflow: hidden;
     }
 
@@ -86,80 +120,73 @@
 
     #visual-box {
       background: #2c3e50;
-      height: 180px;
+      height: 160px;
       border-radius: 12px;
-      margin-bottom: 25px;
+      margin-bottom: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
       position: relative;
-      overflow: hidden;
     }
 
     .block-graphic {
-      width: 110px;
-      height: 110px;
+      width: 100px;
+      height: 100px;
       background: linear-gradient(#95a5a6, #7f8c8d);
-      border: 5px solid #34495e;
+      border: 4px solid #34495e;
       border-radius: 8px;
       position: relative;
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: all 0.6s ease;
     }
 
-    .insulation-layer { border: 12px dashed #f1c40f; padding: 8px; border-radius: 16px; }
+    .insulation-layer { border: 10px dashed #f1c40f; padding: 6px; border-radius: 14px; }
 
     .thermometer {
-      width: 8px; height: 65px; background: linear-gradient(#e74c3c, #c0392b);
-      position: absolute; top: -28px; left: 38px; border-radius: 4px;
+      width: 7px; height: 55px; background: linear-gradient(#e74c3c, #c0392b);
+      position: absolute; top: -24px; left: 34px; border-radius: 3px;
     }
 
     .water-drop {
-      width: 10px; height: 10px; background: #3498db; border-radius: 50%;
-      position: absolute; top: 28px; left: 37px; opacity: 0;
-      transition: opacity 0.6s ease;
+      width: 9px; height: 9px; background: #3498db; border-radius: 50%;
+      position: absolute; top: 24px; left: 33px; opacity: 0;
+      transition: opacity 0.5s;
     }
 
     #temp-display {
-      position: absolute; bottom: -22px; font-size: 15px; font-weight: bold;
-      color: #ecf0f1;
+      position: absolute; bottom: -20px; font-size: 14px; font-weight: bold; color: #ecf0f1;
     }
 
     #prompt-text {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
       color: var(--primary);
-      margin-bottom: 18px;
+      margin-bottom: 15px;
       line-height: 1.4;
     }
 
     .equation {
       background: #f0f0f0;
-      padding: 8px 12px;
+      padding: 7px 11px;
       border-radius: 6px;
       font-family: monospace;
-      font-size: 15px;
-      margin: 8px 0;
+      font-size: 14px;
+      margin: 6px 0;
       display: inline-block;
     }
 
-    .options-container {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .options-container { display: flex; flex-direction: column; gap: 10px; }
 
     .btn-option {
       background: #f8f9fa;
-      border: 3px solid #dcdde1;
-      padding: 14px 18px;
+      border: 2px solid #dcdde1;
+      padding: 13px 16px;
       border-radius: 8px;
       cursor: pointer;
       text-align: left;
-      font-size: 15.5px;
-      transition: all 0.25s ease;
+      font-size: 15px;
+      transition: all 0.2s;
     }
 
     .btn-option:hover {
@@ -168,42 +195,37 @@
       color: white;
     }
 
-    #sort-list {
-      list-style: none;
-      padding: 0;
-      margin: 15px 0;
-    }
+    #sort-list { list-style: none; padding: 0; margin: 12px 0; }
 
     #sort-list li {
       background: #f8f9fa;
       border: 2px solid #bdc3c7;
-      padding: 14px 18px;
-      margin-bottom: 8px;
+      padding: 12px 15px;
+      margin-bottom: 7px;
       border-radius: 8px;
       cursor: grab;
-      user-select: none;
-      font-size: 15px;
+      font-size: 14px;
     }
 
-    #sort-list li:hover { background: #fff; border-color: #3498db; }
+    #sort-list li:hover { border-color: #3498db; }
     .correct-order { border-color: var(--success) !important; background: #d4edda !important; }
 
     #feedback-box {
-      margin-top: 20px;
-      padding: 16px;
+      margin-top: 15px;
+      padding: 14px;
       border-radius: 8px;
       display: none;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 500;
     }
 
-    .feedback-correct { background-color: #d4edda; color: #155724; }
-    .feedback-wrong { background-color: #f8d7da; color: #721c24; }
+    .feedback-correct { background: #d4edda; color: #155724; }
+    .feedback-wrong { background: #f8d7da; color: #721c24; }
 
-    #next-btn, #check-sort-btn, #print-btn {
-      margin-top: 15px;
+    #next-btn, #check-sort-btn {
+      margin-top: 12px;
       width: 100%;
-      padding: 14px;
+      padding: 13px;
       border: none;
       border-radius: 8px;
       font-weight: bold;
@@ -213,59 +235,65 @@
 
     #check-sort-btn { background: #27ae60; }
     #next-btn { background: linear-gradient(90deg, var(--primary), #34495e); }
-    #print-btn { background: #8e44ad; }
 
     .summary-item {
       background: #f8f9fa;
       border-left: 5px solid #e74c3c;
-      padding: 12px 15px;
-      margin: 10px 0;
+      padding: 11px 14px;
+      margin: 9px 0;
       border-radius: 6px;
       font-size: 14px;
-      line-height: 1.5;
+      line-height: 1.45;
     }
 
-    .summary-item strong { color: #c0392b; }
-
-    /* Print styles - makes the printed page clean */
     @media print {
-      body {
-        background: white;
-        padding: 0;
-      }
-      #game-card {
-        box-shadow: none;
-        max-width: 100%;
-      }
-      #visual-box, #progress-bar-container, #next-btn, #print-btn, 
-      button, .btn-option, #feedback-box {
-        display: none !important;
-      }
-      .header h2 {
-        display: none;
-      }
+      body { background: white; padding: 0; }
+      .card { box-shadow: none; max-width: 100%; }
+      #visual-box, #progress-bar-container, #next-btn, #print-btn,
+      button, .btn-option, #feedback-box, .no-print { display: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAME ENTRY SCREEN -->
-  <div id="name-screen">
-    <h1>Specific Heat Capacity Lab</h1>
-    <p style="color:#7f8c8d;">AQA GCSE Required Practical</p>
+  <!-- ========== NAME SCREEN ========== -->
+  <div id="name-screen" class="card">
+    <h1>AQA Physics Required Practicals</h1>
+    <h2>GCSE Practice Simulator</h2>
     <br>
     <input type="text" id="first-name" placeholder="First name">
     <input type="text" id="surname" placeholder="Surname">
     <br>
-    <button onclick="startLab()">Start Lab</button>
-    <p id="name-error" style="color:#e74c3c; display:none;">Please enter both names</p>
+    <button class="btn btn-primary" onclick="goToMenu()" style="width:100%; margin-top:12px;">Continue</button>
+    <p id="name-error" style="color:#e74c3c; display:none; text-align:center;">Please enter both names</p>
   </div>
 
-  <!-- MAIN GAME -->
-  <div id="game-card" style="display:none;">
-    <div class="header">
-      <h1>Specific Heat Capacity Challenge</h1>
-      <h2>AQA GCSE Required Practical 1</h2>
+  <!-- ========== SELECTION MENU ========== -->
+  <div id="menu-screen" class="card" style="display:none;">
+    <h1>Select a Required Practical</h1>
+    <p style="text-align:center; color:#7f8c8d; margin-bottom:5px;">
+      Student: <strong id="display-name"></strong>
+    </p>
+    <p style="text-align:center; font-size:13px; color:#95a5a6;">
+      Triple-only practicals are marked with a purple badge
+    </p>
+
+    <div class="practical-list" id="practical-list"></div>
+
+    <button class="btn btn-secondary" onclick="location.reload()" style="width:100%; margin-top:20px;">
+      Change Name / Restart
+    </button>
+  </div>
+
+  <!-- ========== GAME / SIMULATION ========== -->
+  <div id="game-card" class="card" style="display:none;">
+    <div style="text-align:center; margin-bottom:10px;">
+      <button class="btn btn-secondary no-print" onclick="backToMenu()" style="padding:6px 14px; font-size:13px;">← Back to Menu</button>
+    </div>
+
+    <div class="header" style="border-bottom:3px solid var(--primary); padding-bottom:12px; margin-bottom:18px; text-align:center;">
+      <h1 id="game-title">Specific Heat Capacity</h1>
+      <h2 id="game-subtitle">AQA Required Practical</h2>
     </div>
 
     <div id="progress-bar-container">
@@ -285,9 +313,18 @@
     <div id="prompt-text">Loading...</div>
     <div class="options-container" id="options-box"></div>
     <div id="feedback-box"></div>
-    <button id="next-btn" onclick="advanceStage()" style="display:none;">Continue to Next Stage →</button>
+    <button id="next-btn" onclick="advanceStage()" style="display:none;">Continue →</button>
 
     <div id="summary-section" style="display:none;"></div>
+  </div>
+
+  <!-- ========== COMING SOON ========== -->
+  <div id="coming-soon" class="card" style="display:none; text-align:center;">
+    <h1 id="coming-title">Coming Soon</h1>
+    <p style="color:#7f8c8d; margin:20px 0;">This practical is under construction.</p>
+    <p>We will add interactive versions of all Required Practicals over time.</p>
+    <br>
+    <button class="btn btn-primary" onclick="backToMenu()">← Back to Menu</button>
   </div>
 
 <script>
@@ -298,7 +335,21 @@
   let incorrectAttempts = 0;
   let mistakes = [];
 
-  function startLab() {
+  // ========== PRACTICAL LIST ==========
+  const practicals = [
+    { id: "shc", name: "1. Specific Heat Capacity", paper: "Paper 1", triple: false, ready: true },
+    { id: "insulation", name: "2. Thermal Insulation", paper: "Paper 1", triple: true, ready: false },
+    { id: "resistance", name: "3. Resistance of a Wire", paper: "Paper 1", triple: false, ready: false },
+    { id: "iv", name: "4. I–V Characteristics", paper: "Paper 1", triple: false, ready: false },
+    { id: "density", name: "5. Density", paper: "Paper 1", triple: false, ready: false },
+    { id: "hooke", name: "6. Force and Extension (Hooke’s Law)", paper: "Paper 2", triple: false, ready: false },
+    { id: "acceleration", name: "7. Acceleration", paper: "Paper 2", triple: false, ready: false },
+    { id: "waves", name: "8. Waves (Ripple Tank & Solids)", paper: "Paper 2", triple: false, ready: false },
+    { id: "light", name: "9. Reflection & Refraction of Light", paper: "Paper 2", triple: true, ready: false },
+    { id: "infrared", name: "10. Infrared Radiation", paper: "Paper 2", triple: false, ready: false }
+  ];
+
+  function goToMenu() {
     const first = document.getElementById('first-name').value.trim();
     const surname = document.getElementById('surname').value.trim();
 
@@ -311,10 +362,70 @@
     studentSurname = surname;
 
     document.getElementById('name-screen').style.display = 'none';
-    document.getElementById('game-card').style.display = 'block';
-    renderStage();
+    document.getElementById('menu-screen').style.display = 'block';
+    document.getElementById('display-name').innerText = first + " " + surname;
+
+    // Build the list
+    const list = document.getElementById('practical-list');
+    list.innerHTML = '';
+
+    practicals.forEach(p => {
+      const btn = document.createElement('div');
+      btn.className = 'practical-btn' + (p.ready ? '' : ' disabled');
+      btn.onclick = () => selectPractical(p);
+
+      let badges = '';
+      if (p.triple) badges += `<span class="badge badge-triple">Triple only</span> `;
+      if (!p.ready) badges += `<span class="badge badge-coming">Coming soon</span>`;
+
+      btn.innerHTML = `
+        <div>
+          <strong>${p.name}</strong><br>
+          <span style="font-size:12px; color:#7f8c8d;">${p.paper}</span>
+        </div>
+        <div>${badges}</div>
+      `;
+      list.appendChild(btn);
+    });
   }
 
+  function selectPractical(p) {
+    if (!p.ready) {
+      document.getElementById('menu-screen').style.display = 'none';
+      document.getElementById('coming-soon').style.display = 'block';
+      document.getElementById('coming-title').innerText = p.name;
+      return;
+    }
+
+    // Only SHC is ready
+    if (p.id === "shc") {
+      document.getElementById('menu-screen').style.display = 'none';
+      document.getElementById('game-card').style.display = 'block';
+      document.getElementById('game-title').innerText = "Specific Heat Capacity";
+      document.getElementById('game-subtitle').innerText = "AQA Required Practical 1";
+      currentStageIndex = 0;
+      mistakes = [];
+      useJouleMeter = false;
+      renderStage();
+    }
+  }
+
+  function backToMenu() {
+    document.getElementById('game-card').style.display = 'none';
+    document.getElementById('coming-soon').style.display = 'none';
+    document.getElementById('menu-screen').style.display = 'block';
+    // Reset visuals
+    document.getElementById('insulation-wrapper').classList.remove('insulation-layer');
+    document.getElementById('water-visual').style.opacity = '0';
+    document.getElementById('temp-display').innerText = '20°C';
+    document.getElementById('temp-display').style.color = '#ecf0f1';
+    document.getElementById('metal-block').style.background = 'linear-gradient(#95a5a6, #7f8c8d)';
+    document.getElementById('visual-box').style.display = 'flex';
+    document.getElementById('progress-bar-container').style.display = 'block';
+    document.getElementById('summary-section').style.display = 'none';
+  }
+
+  // ========== SHC STAGES (same as before) ==========
   const stages = [
     {
       title: "Equipment Selection",
@@ -435,7 +546,7 @@
 
   function renderStage() {
     const stage = stages[currentStageIndex];
-    document.querySelector('h2').innerText = stage.title;
+    document.getElementById('game-subtitle').innerText = stage.title;
     document.getElementById('prompt-text').innerHTML = typeof stage.question === 'function' ? stage.question() : stage.question;
     document.getElementById('progress-bar').style.width = `${Math.round(((currentStageIndex + 1) / stages.length) * 100)}%`;
 
@@ -516,10 +627,7 @@
       feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
 
       if (incorrectAttempts >= 5) {
-        mistakes.push({
-          stage: stage.title,
-          correct: "See the correct order shown on screen"
-        });
+        mistakes.push({ stage: stage.title, correct: "See the correct order shown on screen" });
         showCorrectOrder(stage);
       } else {
         setTimeout(() => feedbackBox.style.display = 'none', 2200);
@@ -539,11 +647,9 @@
       list.appendChild(li);
     });
 
-    const feedbackBox = document.getElementById('feedback-box');
-    feedbackBox.className = 'feedback-correct';
-    feedbackBox.innerHTML = `<strong>Correct order shown above.</strong>`;
-    feedbackBox.style.display = 'block';
-
+    document.getElementById('feedback-box').className = 'feedback-correct';
+    document.getElementById('feedback-box').innerHTML = `<strong>Correct order shown above.</strong>`;
+    document.getElementById('feedback-box').style.display = 'block';
     document.getElementById('next-btn').style.display = 'block';
     document.getElementById('check-sort-btn').style.display = 'none';
   }
@@ -562,11 +668,7 @@
       feedbackBox.innerText = typeof stage.wrongFeedback === 'function' ? stage.wrongFeedback() : stage.wrongFeedback;
 
       const correctAns = typeof stage.correctAnswer === 'function' ? stage.correctAnswer() : stage.correctAnswer;
-      mistakes.push({
-        stage: stage.title,
-        chosen: chosenText,
-        correct: correctAns
-      });
+      mistakes.push({ stage: stage.title, chosen: chosenText, correct: correctAns });
 
       setTimeout(() => document.querySelectorAll('.btn-option').forEach(b => b.disabled = false), 1600);
     }
@@ -596,7 +698,7 @@
       <div style="text-align:center; margin-bottom:20px;">
         <h2 style="margin:0; color:#2c3e50;">Results Summary</h2>
         <p style="font-size:18px; margin:8px 0;"><strong>${studentFirstName} ${studentSurname}</strong></p>
-        <p style="color:#7f8c8d; font-size:14px;">AQA Specific Heat Capacity Required Practical</p>
+        <p style="color:#7f8c8d; font-size:14px;">Specific Heat Capacity – AQA Required Practical</p>
       </div>
     `;
 
@@ -615,18 +717,13 @@
     }
 
     html += `
-      <br>
-      <button id="print-btn" onclick="window.print()">🖨️ Print Summary</button>
+      <button id="print-btn" class="btn btn-print" onclick="window.print()">🖨️ Print Summary</button>
       <br><br>
-      <button onclick="location.reload()" style="padding:10px 20px; background:#7f8c8d; color:white; border:none; border-radius:6px; cursor:pointer;">
-        Restart Lab
-      </button>
+      <button class="btn btn-secondary" onclick="backToMenu()" style="width:100%;">← Back to Menu</button>
     `;
 
     summarySection.innerHTML = html;
   }
-
-  // Start with name screen
 </script>
 </body>
 </html>
