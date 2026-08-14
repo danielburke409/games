@@ -256,7 +256,7 @@
 </head>
 <body>
 
-  <!-- ========== NAME SCREEN ========== -->
+  <!-- NAME SCREEN -->
   <div id="name-screen" class="card">
     <h1>AQA Physics Required Practicals</h1>
     <h2>GCSE Practice Simulator</h2>
@@ -268,7 +268,7 @@
     <p id="name-error" style="color:#e74c3c; display:none; text-align:center;">Please enter both names</p>
   </div>
 
-  <!-- ========== SELECTION MENU ========== -->
+  <!-- SELECTION MENU -->
   <div id="menu-screen" class="card" style="display:none;">
     <h1>Select a Required Practical</h1>
     <p style="text-align:center; color:#7f8c8d; margin-bottom:5px;">
@@ -285,7 +285,7 @@
     </button>
   </div>
 
-  <!-- ========== GAME / SIMULATION ========== -->
+  <!-- GAME -->
   <div id="game-card" class="card" style="display:none;">
     <div style="text-align:center; margin-bottom:10px;">
       <button class="btn btn-secondary no-print" onclick="backToMenu()" style="padding:6px 14px; font-size:13px;">← Back to Menu</button>
@@ -318,7 +318,7 @@
     <div id="summary-section" style="display:none;"></div>
   </div>
 
-  <!-- ========== COMING SOON ========== -->
+  <!-- COMING SOON -->
   <div id="coming-soon" class="card" style="display:none; text-align:center;">
     <h1 id="coming-title">Coming Soon</h1>
     <p style="color:#7f8c8d; margin:20px 0;">This practical is under construction.</p>
@@ -335,7 +335,6 @@
   let incorrectAttempts = 0;
   let mistakes = [];
 
-  // ========== PRACTICAL LIST ==========
   const practicals = [
     { id: "shc", name: "1. Specific Heat Capacity", paper: "Paper 1", triple: false, ready: true },
     { id: "insulation", name: "2. Thermal Insulation", paper: "Paper 1", triple: true, ready: false },
@@ -365,7 +364,6 @@
     document.getElementById('menu-screen').style.display = 'block';
     document.getElementById('display-name').innerText = first + " " + surname;
 
-    // Build the list
     const list = document.getElementById('practical-list');
     list.innerHTML = '';
 
@@ -397,7 +395,6 @@
       return;
     }
 
-    // Only SHC is ready
     if (p.id === "shc") {
       document.getElementById('menu-screen').style.display = 'none';
       document.getElementById('game-card').style.display = 'block';
@@ -414,7 +411,6 @@
     document.getElementById('game-card').style.display = 'none';
     document.getElementById('coming-soon').style.display = 'none';
     document.getElementById('menu-screen').style.display = 'block';
-    // Reset visuals
     document.getElementById('insulation-wrapper').classList.remove('insulation-layer');
     document.getElementById('water-visual').style.opacity = '0';
     document.getElementById('temp-display').innerText = '20°C';
@@ -425,7 +421,7 @@
     document.getElementById('summary-section').style.display = 'none';
   }
 
-  // ========== SHC STAGES (same as before) ==========
+  // ========== STAGES ==========
   const stages = [
     {
       title: "Equipment Selection",
@@ -519,27 +515,23 @@
     },
     {
       title: "Final Activity: Order the Method",
-      question: "Drag the statements into the correct order.",
+      question: "Drag the statements into the correct order (5 steps).",
       isSorting: true,
       getStatements: () => useJouleMeter ? [
-        "Zero the digital balance and measure the mass of the metal block.",
-        "Insert heater and thermometer, add drops of water for good contact.",
-        "Wrap the block with insulating material.",
-        "Record the initial temperature.",
-        "Reset the joulemeter to zero.",
+        "Zero the balance and measure the mass of the metal block.",
+        "Insert heater and thermometer, add water drops, and wrap with insulation.",
+        "Record the initial temperature and reset the joulemeter to zero.",
         "Switch on the heater and monitor the temperature rise.",
         "Switch off, record final temperature and joulemeter reading, then calculate c."
       ] : [
-        "Zero the digital balance and measure the mass of the metal block.",
-        "Insert heater and thermometer, add drops of water for good contact.",
-        "Wrap the block with insulating material.",
-        "Record the initial temperature.",
-        "Connect heater and record voltage and current.",
-        "Switch on for measured time and monitor temperature.",
-        "Switch off, record final temperature, calculate E = VIt and c."
+        "Zero the balance and measure the mass of the metal block.",
+        "Insert heater and thermometer, add water drops, and wrap with insulation.",
+        "Record the initial temperature, connect the power supply and note V and I.",
+        "Switch on the heater for a measured time and monitor the temperature rise.",
+        "Switch off, record the final temperature, then calculate E = VIt and c."
       ],
-      correctOrder: [0,1,2,3,4,5,6],
-      correctFeedback: "Perfect! You have correctly ordered the full method.",
+      correctOrder: [0,1,2,3,4],
+      correctFeedback: "Perfect! You have correctly ordered the method.",
       wrongFeedback: "Not quite right. Try again."
     }
   ];
