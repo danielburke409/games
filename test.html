@@ -360,6 +360,9 @@
     studentFirstName = first;
     studentSurname = surname;
 
+    localStorage.setItem('studentFirstName', first);
+    localStorage.setItem('studentSurname', surname);
+
     document.getElementById('name-screen').style.display = 'none';
     document.getElementById('menu-screen').style.display = 'block';
     document.getElementById('display-name').innerText = first + " " + surname;
