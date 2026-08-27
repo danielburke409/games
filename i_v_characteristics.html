@@ -1,1 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQA I–V Characteristics Required Practical</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 680px;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+    h1 { margin: 0; font-size: 24px; color: var(--primary); text-align: center; }
+    h2 { margin: 8px 0 0 0; font-size: 14px; color: #7f8c8d; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-primary { background: #3498db; }
+    .btn-secondary { background: #7f8c8d; }
+    .btn-print { background: #8e44ad; width: 100%; margin-top: 15px; }
+    #progress-bar-container {
+      background: #ddd;
+      height: 10px;
+      border-radius: 6px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    #progress-bar {
+      background: linear-gradient(90deg, var(--accent), #2980b9);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    #visual-box {
+      background: #2c3e50;
+      height: 140px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 17px;
+      text-align: center;
+      padding: 10px;
+    }
+    #prompt-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .equation {
+      background: #f0f0f0;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      margin: 6px 0;
+      display: inline-block;
+    }
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-option {
+      background: #f8f9fa;
+      border: 2px solid #dcdde1;
+      padding: 13px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-option:hover {
+      background: #f39c12;
+      border-color: #e67e22;
+      color: white;
+    }
+    #sort-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+    #sort-list li {
+      background: #f8f9fa;
+      border: 2px solid #bdc3c7;
+      padding: 12px 15px;
+      margin-bottom: 7px;
+      border-radius: 8px;
+      cursor: grab;
+      font-size: 14px;
+    }
+    #sort-list li:hover { border-color: #3498db; }
+    .correct-order { border-color: var(--success) !important; background: #d4edda !important; }
+    #feedback-box {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 8px;
+      display: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .feedback-correct { background: #d4edda; color: #155724; }
+    .feedback-wrong { background: #f8d7da; color: #721c24; }
+    .summary-item {
+      background: #f8f9fa;
+      border-left: 5px solid #e74c3c;
+      padding: 11px 14px;
+      margin: 9px 0;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .card { box-shadow: none; max-width: 100%; }
+      #visual-box, #progress-bar-container, #next-btn, #print-btn, #check-sort-btn,
+      button, .btn-option, #feedback-box, .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
 
+  <div id="game-card" class="card">
+    <div style="text-align:center; margin-bottom:10px;" class="no-print">
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="padding:6px 14px; font-size:13px;">← Back to Main Menu</button>
+    </div>
+
+    <div style="border-bottom:3px solid var(--primary); padding-bottom:12px; margin-bottom:18px; text-align:center;">
+      <h1>I–V Characteristics</h1>
+      <h2 id="game-subtitle">AQA Required Practical</h2>
+      <p style="margin:8px 0 0 0; color:#7f8c8d; font-size:14px;">Student: <strong id="display-name"></strong></p>
+    </div>
+
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="visual-box">
+      <div id="visual-content">📊 I–V Characteristics<br>Resistor • Filament Lamp • Diode</div>
+    </div>
+
+    <div id="prompt-text">Loading...</div>
+    <div class="options-container" id="options-box"></div>
+    <div id="feedback-box"></div>
+    <button id="next-btn" class="btn btn-primary" onclick="advanceStage()" style="display:none; width:100%; margin-top:15px;">Continue →</button>
+
+    <div id="summary-section" style="display:none;"></div>
+  </div>
+
+<script>
+  let studentFirstName = localStorage.getItem('studentFirstName') || "Student";
+  let studentSurname = localStorage.getItem('studentSurname') || "";
+  let currentStageIndex = 0;
+  let incorrectAttempts = 0;
+  let mistakes = [];
+
+  document.getElementById('display-name').innerText = studentFirstName + " " + studentSurname;
+
+  const stages = [
+    {
+      title: "Zero Error – Ammeters & Voltmeters",
+      question: "What is a zero error on an ammeter or voltmeter?",
+      options: [
+        { text: "When the meter does not read exactly zero when no current or voltage is present", correct: true },
+        { text: "When the meter shows a reading of zero during the experiment", correct: false },
+        { text: "When the meter is not switched on", correct: false }
+      ],
+      correctAnswer: "When the meter does not read exactly zero when no current or voltage is present",
+      correctFeedback: "Correct! A zero error is a systematic error. You should check and record it (or adjust the meter if possible) before starting.",
+      wrongFeedback: "Zero error means the meter doesn’t read zero when it should (no current/voltage)."
+    },
+    {
+      title: "Dealing with Zero Error",
+      question: "What should you do if the ammeter or voltmeter has a zero error?",
+      options: [
+        { text: "Note the zero error and subtract it from all readings (or adjust the meter if possible)", correct: true },
+        { text: "Ignore it – it won’t affect the results", correct: false },
+        { text: "Only use the meter for high currents/voltages", correct: false }
+      ],
+      correctAnswer: "Note the zero error and subtract it from all readings (or adjust the meter if possible)",
+      correctFeedback: "Correct! Zero errors are systematic and should be corrected.",
+      wrongFeedback: "You should always check for and correct zero errors."
+    },
+    {
+      title: "Circuit Setup",
+      question: "How should the ammeter and voltmeter be connected when investigating I–V characteristics?",
+      options: [
+        { text: "Ammeter in series with the component, voltmeter in parallel across the component", correct: true },
+        { text: "Voltmeter in series, ammeter in parallel", correct: false },
+        { text: "Both meters in parallel with the component", correct: false }
+      ],
+      correctAnswer: "Ammeter in series with the component, voltmeter in parallel across the component",
+      correctFeedback: "Correct! This is the standard way to measure current through and voltage across a component.",
+      wrongFeedback: "Ammeter must be in series; voltmeter must be in parallel across the component."
+    },
+    {
+      title: "Resistor (Ohmic Conductor)",
+      question: "What does the I–V graph for a fixed resistor look like at constant temperature?",
+      options: [
+        { text: "A straight line through the origin", correct: true },
+        { text: "A curve that gets steeper", correct: false },
+        { text: "A horizontal line", correct: false }
+      ],
+      correctAnswer: "A straight line through the origin",
+      correctFeedback: "Correct! A resistor is an ohmic conductor – current is directly proportional to potential difference (V = IR).",
+      wrongFeedback: "For a resistor (at constant temperature) the graph is a straight line through the origin."
+    },
+    {
+      title: "Filament Lamp",
+      question: "Why does the I–V graph for a filament lamp curve as the potential difference increases?",
+      options: [
+        { text: "The lamp gets hotter, so its resistance increases", correct: true },
+        { text: "The current decreases as voltage increases", correct: false },
+        { text: "The lamp only works in one direction", correct: false }
+      ],
+      correctAnswer: "The lamp gets hotter, so its resistance increases",
+      correctFeedback: "Correct! As the filament heats up, resistance increases, so the current does not increase as much as it would in a resistor.",
+      wrongFeedback: "The filament temperature rises, increasing resistance – this causes the curve."
+    },
+    {
+      title: "Diode",
+      question: "What is special about the I–V characteristic of a diode?",
+      options: [
+        { text: "It only allows significant current in one direction (forward bias)", correct: true },
+        { text: "It has a constant resistance in both directions", correct: false },
+        { text: "Current is zero at all voltages", correct: false }
+      ],
+      correctAnswer: "It only allows significant current in one direction (forward bias)",
+      correctFeedback: "Correct! A diode has very high resistance in reverse bias and low resistance in forward bias (above ~0.6 V for silicon).",
+      wrongFeedback: "Diodes only conduct properly in one direction."
+    },
+    {
+      title: "Taking Full Readings",
+      question: "Why do we reverse the power supply connections during the experiment?",
+      options: [
+        { text: "To obtain both positive and negative values of V and I so we can plot the full characteristic", correct: true },
+        { text: "To prevent the component from overheating", correct: false },
+        { text: "To zero the meters", correct: false }
+      ],
+      correctAnswer: "To obtain both positive and negative values of V and I so we can plot the full characteristic",
+      correctFeedback: "Correct! This allows us to see the behaviour in both directions (especially important for the diode).",
+      wrongFeedback: "Reversing the supply lets us record negative values and plot the complete graph."
+    },
+    {
+      title: "Final Activity: Order the Method",
+      question: "Drag the statements into the correct order for the I–V Characteristics practical.",
+      isSorting: true,
+      statements: [
+        "Check the ammeter and voltmeter for zero errors and note/correct them.",
+        "Set up the circuit with the ammeter in series and voltmeter in parallel across the component.",
+        "Record current and potential difference for a range of values (including reversed connections).",
+        "Plot a graph of Current (y-axis) against Potential Difference (x-axis).",
+        "Repeat the process for a resistor, a filament lamp and a diode."
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
+      correctFeedback: "Perfect! You have correctly ordered the method.",
+      wrongFeedback: "Not quite right. Try again."
+    }
+  ];
+
+  function renderStage() {
+    const stage = stages[currentStageIndex];
+    document.getElementById('game-subtitle').innerText = stage.title;
+    document.getElementById('prompt-text').innerHTML = stage.question;
+    document.getElementById('progress-bar').style.width = `${Math.round(((currentStageIndex + 1) / stages.length) * 100)}%`;
+
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    incorrectAttempts = 0;
+
+    if (stage.isSorting) {
+      renderSortingActivity(stage);
+    } else {
+      stage.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => evaluateAnswer(opt.correct, stage, opt.text);
+        optionsBox.appendChild(btn);
+      });
+    }
+  }
+
+  function renderSortingActivity(stage) {
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = `
+      <ul id="sort-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      <button id="check-sort-btn" class="btn btn-primary" onclick="checkSorting()" style="width:100%; margin-top:10px;">Check Order</button>
+    `;
+
+    const list = document.getElementById('sort-list');
+    const statements = [...stage.statements];
+    // Shuffle
+    for (let i = statements.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [statements[i], statements[j]] = [statements[j], statements[i]];
+    }
+
+    statements.forEach((text) => {
+      const li = document.createElement('li');
+      li.draggable = true;
+      li.ondragstart = drag;
+      li.innerText = text;
+      li.dataset.index = stage.statements.indexOf(text);
+      list.appendChild(li);
+    });
+  }
+
+  function allowDrop(ev) { ev.preventDefault(); }
+  function drag(ev) { ev.dataTransfer.setData("text", ev.target.dataset.index); }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const dragged = document.querySelector(`li[data-index="${data}"]`);
+    const target = ev.target.closest('li');
+    if (target && dragged !== target) {
+      document.getElementById('sort-list').insertBefore(dragged, target);
+    }
+  }
+
+  function checkSorting() {
+    const stage = stages[currentStageIndex];
+    const listItems = Array.from(document.querySelectorAll('#sort-list li'));
+    const currentOrder = listItems.map(item => parseInt(item.dataset.index));
+    const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(stage.correctOrder);
+
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+      document.getElementById('check-sort-btn').style.display = 'none';
+    } else {
+      incorrectAttempts++;
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
+
+      if (incorrectAttempts >= 5) {
+        const list = document.getElementById('sort-list');
+        list.innerHTML = '';
+        stage.statements.forEach((text, index) => {
+          const li = document.createElement('li');
+          li.innerText = `${index + 1}. ${text}`;
+          li.classList.add('correct-order');
+          list.appendChild(li);
+        });
+        feedbackBox.className = 'feedback-correct';
+        feedbackBox.innerHTML = `<strong>Correct order shown above.</strong>`;
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('check-sort-btn').style.display = 'none';
+        mistakes.push({
+          stage: stage.title,
+          chosen: "Incorrect order",
+          correct: "See the correct order shown"
+        });
+      } else {
+        setTimeout(() => feedbackBox.style.display = 'none', 2000);
+      }
+    }
+  }
+
+  function evaluateAnswer(isCorrect, stage, chosenText) {
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+    document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+    } else {
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback;
+      mistakes.push({
+        stage: stage.title,
+        chosen: chosenText,
+        correct: stage.correctAnswer
+      });
+      setTimeout(() => {
+        document.querySelectorAll('.btn-option').forEach(b => b.disabled = false);
+      }, 1500);
+    }
+  }
+
+  function advanceStage() {
+    currentStageIndex++;
+    if (currentStageIndex < stages.length) {
+      renderStage();
+    } else {
+      showFinalSummary();
+    }
+  }
+
+  function showFinalSummary() {
+    document.getElementById('prompt-text').innerHTML = `<strong style="font-size:22px;color:#2ecc71;">🎉 Practical Complete!</strong>`;
+    document.getElementById('options-box').innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('visual-box').style.display = 'none';
+    document.getElementById('progress-bar-container').style.display = 'none';
+
+    const summarySection = document.getElementById('summary-section');
+    summarySection.style.display = 'block';
+
+    let html = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#2c3e50;">Results Summary</h2>
+        <p style="font-size:18px; margin:8px 0;"><strong>${studentFirstName} ${studentSurname}</strong></p>
+        <p style="color:#7f8c8d; font-size:14px;">I–V Characteristics – AQA Required Practical</p>
+      </div>
+    `;
+
+    if (mistakes.length === 0) {
+      html += `<p style="color:#27ae60; font-size:16px; text-align:center;">Excellent! You answered everything correctly.</p>`;
+    } else {
+      html += `<p>You made mistakes on the following:</p>`;
+      mistakes.forEach(m => {
+        html += `
+          <div class="summary-item">
+            <strong>${m.stage}</strong><br>
+            You chose: <em>${m.chosen}</em><br>
+            Correct answer: <strong>${m.correct}</strong>
+          </div>`;
+      });
+    }
+
+    html += `
+      <button id="print-btn" class="btn btn-print" onclick="window.print()">🖨️ Print Summary</button>
+      <br><br>
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="width:100%;">← Back to Main Menu</button>
+    `;
+
+    summarySection.innerHTML = html;
+  }
+
+  // Start the practical
+  renderStage();
+</script>
+</body>
+</html>
