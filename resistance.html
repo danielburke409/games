@@ -1,1 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQA Resistance of a Wire Required Practical</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 680px;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+    h1 { margin: 0; font-size: 24px; color: var(--primary); text-align: center; }
+    h2 { margin: 8px 0 0 0; font-size: 14px; color: #7f8c8d; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-primary { background: #3498db; }
+    .btn-secondary { background: #7f8c8d; }
+    .btn-print { background: #8e44ad; width: 100%; margin-top: 15px; }
+    #progress-bar-container {
+      background: #ddd;
+      height: 10px;
+      border-radius: 6px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    #progress-bar {
+      background: linear-gradient(90deg, var(--accent), #2980b9);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    #visual-box {
+      background: #2c3e50;
+      height: 140px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 17px;
+      text-align: center;
+      padding: 10px;
+    }
+    #prompt-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .equation {
+      background: #f0f0f0;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      margin: 6px 0;
+      display: inline-block;
+    }
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-option {
+      background: #f8f9fa;
+      border: 2px solid #dcdde1;
+      padding: 13px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-option:hover {
+      background: #f39c12;
+      border-color: #e67e22;
+      color: white;
+    }
+    #sort-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+    #sort-list li {
+      background: #f8f9fa;
+      border: 2px solid #bdc3c7;
+      padding: 12px 15px;
+      margin-bottom: 7px;
+      border-radius: 8px;
+      cursor: grab;
+      font-size: 14px;
+    }
+    #sort-list li:hover { border-color: #3498db; }
+    .correct-order { border-color: var(--success) !important; background: #d4edda !important; }
+    #feedback-box {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 8px;
+      display: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .feedback-correct { background: #d4edda; color: #155724; }
+    .feedback-wrong { background: #f8d7da; color: #721c24; }
+    .summary-item {
+      background: #f8f9fa;
+      border-left: 5px solid #e74c3c;
+      padding: 11px 14px;
+      margin: 9px 0;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .card { box-shadow: none; max-width: 100%; }
+      #visual-box, #progress-bar-container, #next-btn, #print-btn, #check-sort-btn,
+      button, .btn-option, #feedback-box, .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
 
+  <div id="game-card" class="card">
+    <div style="text-align:center; margin-bottom:10px;" class="no-print">
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="padding:6px 14px; font-size:13px;">← Back to Main Menu</button>
+    </div>
+
+    <div style="border-bottom:3px solid var(--primary); padding-bottom:12px; margin-bottom:18px; text-align:center;">
+      <h1>Resistance of a Wire</h1>
+      <h2 id="game-subtitle">AQA Required Practical</h2>
+      <p style="margin:8px 0 0 0; color:#7f8c8d; font-size:14px;">Student: <strong id="display-name"></strong></p>
+    </div>
+
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="visual-box">
+      <div id="visual-content">🔌 Resistance of a Wire Practical</div>
+    </div>
+
+    <div id="prompt-text">Loading...</div>
+    <div class="options-container" id="options-box"></div>
+    <div id="feedback-box"></div>
+    <button id="next-btn" class="btn btn-primary" onclick="advanceStage()" style="display:none; width:100%; margin-top:15px;">Continue →</button>
+
+    <div id="summary-section" style="display:none;"></div>
+  </div>
+
+<script>
+  let studentFirstName = localStorage.getItem('studentFirstName') || "Student";
+  let studentSurname = localStorage.getItem('studentSurname') || "";
+  let currentStageIndex = 0;
+  let incorrectAttempts = 0;
+  let mistakes = [];
+
+  document.getElementById('display-name').innerText = studentFirstName + " " + studentSurname;
+
+  const stages = [
+    {
+      title: "Circuit Setup",
+      question: "In the resistance of a wire practical, where should the ammeter and voltmeter be placed?",
+      options: [
+        { text: "Ammeter in series with the wire, voltmeter in parallel across the wire", correct: true },
+        { text: "Voltmeter in series, ammeter in parallel", correct: false },
+        { text: "Both meters in series with the wire", correct: false }
+      ],
+      correctAnswer: "Ammeter in series with the wire, voltmeter in parallel across the wire",
+      correctFeedback: "Correct! Ammeter measures current (series), voltmeter measures potential difference (parallel).",
+      wrongFeedback: "Ammeter must be in series and voltmeter in parallel across the section of wire being tested."
+    },
+    {
+      title: "Calculating Resistance",
+      question: "How do you calculate the resistance of the wire?<br><span class='equation'>R = V ÷ I</span>",
+      options: [
+        { text: "Resistance = Potential difference ÷ Current", correct: true },
+        { text: "Resistance = Current ÷ Potential difference", correct: false },
+        { text: "Resistance = Potential difference × Current", correct: false }
+      ],
+      correctAnswer: "Resistance = Potential difference ÷ Current",
+      correctFeedback: "Correct! R = V / I",
+      wrongFeedback: "Resistance is calculated using R = V ÷ I."
+    },
+    {
+      title: "Effect of Length",
+      question: "What happens to the resistance of the wire as its length increases (all other factors kept constant)?",
+      options: [
+        { text: "Resistance increases (directly proportional)", correct: true },
+        { text: "Resistance decreases", correct: false },
+        { text: "Resistance stays the same", correct: false }
+      ],
+      correctAnswer: "Resistance increases (directly proportional)",
+      correctFeedback: "Correct! Longer wire → higher resistance. A graph of R against length should be a straight line through the origin.",
+      wrongFeedback: "Resistance increases as length increases – they are directly proportional."
+    },
+    {
+      title: "Control Variables",
+      question: "Which of these should be kept constant to make it a fair test when investigating how length affects resistance?",
+      options: [
+        { text: "Thickness (diameter) of the wire and the material of the wire", correct: true },
+        { text: "The length of the wire", correct: false },
+        { text: "The current only", correct: false }
+      ],
+      correctAnswer: "Thickness (diameter) of the wire and the material of the wire",
+      correctFeedback: "Correct! Only the length should be changed. Material and thickness must stay the same.",
+      wrongFeedback: "Material and cross-sectional area (thickness) must be controlled."
+    },
+    {
+      title: "Temperature Effect",
+      question: "Why should you avoid using a high current for a long time in this practical?",
+      options: [
+        { text: "The wire heats up, which increases its resistance and affects the results", correct: true },
+        { text: "The battery will go flat too quickly", correct: false },
+        { text: "The ammeter will break", correct: false }
+      ],
+      correctAnswer: "The wire heats up, which increases its resistance and affects the results",
+      correctFeedback: "Correct! Heating the wire changes its resistance, so results become inaccurate.",
+      wrongFeedback: "High current causes the wire to heat up, increasing resistance."
+    },
+    {
+      title: "Graph Interpretation",
+      question: "What should a graph of Resistance (y-axis) against Length (x-axis) look like?",
+      options: [
+        { text: "A straight line passing through the origin", correct: true },
+        { text: "A curve that levels off", correct: false },
+        { text: "A horizontal straight line", correct: false }
+      ],
+      correctAnswer: "A straight line passing through the origin",
+      correctFeedback: "Correct! This shows that resistance is directly proportional to length.",
+      wrongFeedback: "It should be a straight line through the origin (directly proportional)."
+    },
+    {
+      title: "Calculation Practice",
+      question: "A wire has a potential difference of 3.0 V across it and a current of 0.25 A flowing through it. What is its resistance?<br><span class='equation'>R = V ÷ I</span>",
+      options: [
+        { text: "12 Ω", correct: true },
+        { text: "0.75 Ω", correct: false },
+        { text: "7.5 Ω", correct: false }
+      ],
+      correctAnswer: "12 Ω",
+      correctFeedback: "Correct! R = 3.0 ÷ 0.25 = 12 Ω",
+      wrongFeedback: "R = V / I = 3.0 / 0.25 = 12 Ω"
+    },
+    // ===== FINAL SORTING ACTIVITY =====
+    {
+      title: "Final Activity: Order the Method",
+      question: "Drag the statements into the correct order for the Resistance of a Wire practical.",
+      isSorting: true,
+      statements: [
+        "Set up the circuit with the ammeter in series and the voltmeter in parallel across the wire.",
+        "Measure the length of wire between the crocodile clips using a metre ruler.",
+        "Record the current (I) and potential difference (V), then calculate R = V/I.",
+        "Repeat for several different lengths of wire.",
+        "Plot a graph of Resistance against Length and draw a line of best fit."
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
+      correctFeedback: "Perfect! You have correctly ordered the method.",
+      wrongFeedback: "Not quite right. Try again."
+    }
+  ];
+
+  function renderStage() {
+    const stage = stages[currentStageIndex];
+    document.getElementById('game-subtitle').innerText = stage.title;
+    document.getElementById('prompt-text').innerHTML = stage.question;
+    document.getElementById('progress-bar').style.width = `${Math.round(((currentStageIndex + 1) / stages.length) * 100)}%`;
+
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    incorrectAttempts = 0;
+
+    if (stage.isSorting) {
+      renderSortingActivity(stage);
+    } else {
+      stage.options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => evaluateAnswer(opt.correct, stage, opt.text);
+        optionsBox.appendChild(btn);
+      });
+    }
+  }
+
+  function renderSortingActivity(stage) {
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = `
+      <ul id="sort-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      <button id="check-sort-btn" class="btn btn-primary" onclick="checkSorting()" style="width:100%; margin-top:10px;">Check Order</button>
+    `;
+
+    const list = document.getElementById('sort-list');
+    const statements = [...stage.statements];
+    // Shuffle
+    for (let i = statements.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [statements[i], statements[j]] = [statements[j], statements[i]];
+    }
+
+    statements.forEach((text) => {
+      const li = document.createElement('li');
+      li.draggable = true;
+      li.ondragstart = drag;
+      li.innerText = text;
+      li.dataset.index = stage.statements.indexOf(text);
+      list.appendChild(li);
+    });
+  }
+
+  function allowDrop(ev) { ev.preventDefault(); }
+  function drag(ev) { ev.dataTransfer.setData("text", ev.target.dataset.index); }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const dragged = document.querySelector(`li[data-index="${data}"]`);
+    const target = ev.target.closest('li');
+    if (target && dragged !== target) {
+      document.getElementById('sort-list').insertBefore(dragged, target);
+    }
+  }
+
+  function checkSorting() {
+    const stage = stages[currentStageIndex];
+    const listItems = Array.from(document.querySelectorAll('#sort-list li'));
+    const currentOrder = listItems.map(item => parseInt(item.dataset.index));
+    const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(stage.correctOrder);
+
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+      document.getElementById('check-sort-btn').style.display = 'none';
+    } else {
+      incorrectAttempts++;
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
+
+      if (incorrectAttempts >= 5) {
+        // Show correct order
+        const list = document.getElementById('sort-list');
+        list.innerHTML = '';
+        stage.statements.forEach((text, index) => {
+          const li = document.createElement('li');
+          li.innerText = `${index + 1}. ${text}`;
+          li.classList.add('correct-order');
+          list.appendChild(li);
+        });
+        feedbackBox.className = 'feedback-correct';
+        feedbackBox.innerHTML = `<strong>Correct order shown above.</strong>`;
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('check-sort-btn').style.display = 'none';
+        mistakes.push({
+          stage: stage.title,
+          chosen: "Incorrect order",
+          correct: "See the correct order shown"
+        });
+      } else {
+        setTimeout(() => feedbackBox.style.display = 'none', 2000);
+      }
+    }
+  }
+
+  function evaluateAnswer(isCorrect, stage, chosenText) {
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+    document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+    } else {
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback;
+      mistakes.push({
+        stage: stage.title,
+        chosen: chosenText,
+        correct: stage.correctAnswer
+      });
+      setTimeout(() => {
+        document.querySelectorAll('.btn-option').forEach(b => b.disabled = false);
+      }, 1500);
+    }
+  }
+
+  function advanceStage() {
+    currentStageIndex++;
+    if (currentStageIndex < stages.length) {
+      renderStage();
+    } else {
+      showFinalSummary();
+    }
+  }
+
+  function showFinalSummary() {
+    document.getElementById('prompt-text').innerHTML = `<strong style="font-size:22px;color:#2ecc71;">🎉 Practical Complete!</strong>`;
+    document.getElementById('options-box').innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('visual-box').style.display = 'none';
+    document.getElementById('progress-bar-container').style.display = 'none';
+
+    const summarySection = document.getElementById('summary-section');
+    summarySection.style.display = 'block';
+
+    let html = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#2c3e50;">Results Summary</h2>
+        <p style="font-size:18px; margin:8px 0;"><strong>${studentFirstName} ${studentSurname}</strong></p>
+        <p style="color:#7f8c8d; font-size:14px;">Resistance of a Wire – AQA Required Practical</p>
+      </div>
+    `;
+
+    if (mistakes.length === 0) {
+      html += `<p style="color:#27ae60; font-size:16px; text-align:center;">Excellent! You answered everything correctly.</p>`;
+    } else {
+      html += `<p>You made mistakes on the following:</p>`;
+      mistakes.forEach(m => {
+        html += `
+          <div class="summary-item">
+            <strong>${m.stage}</strong><br>
+            You chose: <em>${m.chosen}</em><br>
+            Correct answer: <strong>${m.correct}</strong>
+          </div>`;
+      });
+    }
+
+    html += `
+      <button id="print-btn" class="btn btn-print" onclick="window.print()">🖨️ Print Summary</button>
+      <br><br>
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="width:100%;">← Back to Main Menu</button>
+    `;
+
+    summarySection.innerHTML = html;
+  }
+
+  // Start the practical
+  renderStage();
+</script>
+</body>
+</html>
