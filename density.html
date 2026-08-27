@@ -526,13 +526,18 @@
 
   // Auto-fill name if coming from main menu
   window.onload = function() {
-    const savedFirst = localStorage.getItem('studentFirstName');
-    const savedSurname = localStorage.getItem('studentSurname');
-    if (savedFirst && savedSurname) {
-      document.getElementById('first-name').value = savedFirst;
-      document.getElementById('surname').value = savedSurname;
-    }
-  };
+  const savedFirst = localStorage.getItem('studentFirstName');
+  const savedSurname = localStorage.getItem('studentSurname');
+
+  if (savedFirst && savedSurname) {
+    // Name already entered on the main page → skip name screen
+    studentFirstName = savedFirst;
+    studentSurname = savedSurname;
+    document.getElementById('name-screen').style.display = 'none';
+    document.getElementById('choice-screen').style.display = 'block';
+    document.getElementById('display-name').innerText = savedFirst + " " + savedSurname;
+  }
+};
 </script>
 </body>
 </html>
