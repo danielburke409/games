@@ -387,25 +387,33 @@
     });
   }
 
-  function selectPractical(p) {
-    if (!p.ready) {
-      document.getElementById('menu-screen').style.display = 'none';
-      document.getElementById('coming-soon').style.display = 'block';
-      document.getElementById('coming-title').innerText = p.name;
-      return;
-    }
-
-    if (p.id === "shc") {
-      document.getElementById('menu-screen').style.display = 'none';
-      document.getElementById('game-card').style.display = 'block';
-      document.getElementById('game-title').innerText = "Specific Heat Capacity";
-      document.getElementById('game-subtitle').innerText = "AQA Required Practical 1";
-      currentStageIndex = 0;
-      mistakes = [];
-      useJouleMeter = false;
-      renderStage();
-    }
+function selectPractical(p) {
+  // If the practical has a link → open that file
+  if (p.link) {
+    window.location.href = p.link;
+    return;
   }
+
+  // Coming soon practicals
+  if (!p.ready) {
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('coming-soon').style.display = 'block';
+    document.getElementById('coming-title').innerText = p.name;
+    return;
+  }
+
+  // Specific Heat Capacity (built-in)
+  if (p.id === "shc") {
+    document.getElementById('menu-screen').style.display = 'none';
+    document.getElementById('game-card').style.display = 'block';
+    document.getElementById('game-title').innerText = "Specific Heat Capacity";
+    document.getElementById('game-subtitle').innerText = "AQA Required Practical 1";
+    currentStageIndex = 0;
+    mistakes = [];
+    useJouleMeter = false;
+    renderStage();
+  }
+}
 
   function backToMenu() {
     document.getElementById('game-card').style.display = 'none';
