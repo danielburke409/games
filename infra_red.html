@@ -1,1 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQA Infrared Radiation Required Practical</title>
+  <style>
+    :root {
+      --primary: #2c3e50;
+      --accent: #3498db;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ecf0f1 0%, #bdc3c7 100%);
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+      width: 100%;
+      max-width: 680px;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+    h1 { margin: 0; font-size: 22px; color: var(--primary); text-align: center; }
+    h2 { margin: 8px 0 0 0; font-size: 14px; color: #7f8c8d; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 15px;
+      cursor: pointer;
+      color: white;
+    }
+    .btn-primary { background: #3498db; }
+    .btn-secondary { background: #7f8c8d; }
+    .btn-print { background: #8e44ad; width: 100%; margin-top: 15px; }
+    .choice-btn {
+      background: #f8f9fa;
+      border: 2px solid #dcdde1;
+      padding: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      margin: 12px 0;
+      transition: all 0.2s;
+    }
+    .choice-btn:hover {
+      background: #e8f4fd;
+      border-color: #3498db;
+    }
+    #progress-bar-container {
+      background: #ddd;
+      height: 10px;
+      border-radius: 6px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    #progress-bar {
+      background: linear-gradient(90deg, var(--accent), #2980b9);
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    #visual-box {
+      background: #2c3e50;
+      height: 140px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 17px;
+      text-align: center;
+      padding: 10px;
+    }
+    #prompt-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 15px;
+      line-height: 1.4;
+    }
+    .equation {
+      background: #f0f0f0;
+      padding: 7px 11px;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 14px;
+      margin: 6px 0;
+      display: inline-block;
+    }
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .btn-option {
+      background: #f8f9fa;
+      border: 2px solid #dcdde1;
+      padding: 13px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-option:hover {
+      background: #f39c12;
+      border-color: #e67e22;
+      color: white;
+    }
+    #sort-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+    }
+    #sort-list li {
+      background: #f8f9fa;
+      border: 2px solid #bdc3c7;
+      padding: 12px 15px;
+      margin-bottom: 7px;
+      border-radius: 8px;
+      cursor: grab;
+      font-size: 14px;
+    }
+    #sort-list li:hover { border-color: #3498db; }
+    .correct-order { border-color: var(--success) !important; background: #d4edda !important; }
+    #feedback-box {
+      margin-top: 15px;
+      padding: 14px;
+      border-radius: 8px;
+      display: none;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .feedback-correct { background: #d4edda; color: #155724; }
+    .feedback-wrong { background: #f8d7da; color: #721c24; }
+    .summary-item {
+      background: #f8f9fa;
+      border-left: 5px solid #e74c3c;
+      padding: 11px 14px;
+      margin: 9px 0;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    @media print {
+      body { background: white; padding: 0; }
+      .card { box-shadow: none; max-width: 100%; }
+      #visual-box, #progress-bar-container, #next-btn, #print-btn, #check-sort-btn,
+      button, .btn-option, #feedback-box, .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body>
 
+  <!-- CHOICE SCREEN -->
+  <div id="choice-screen" class="card">
+    <div style="text-align:center; margin-bottom:10px;">
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="padding:6px 14px; font-size:13px;">← Back to Main Menu</button>
+    </div>
+    <h1>Infrared Radiation</h1>
+    <p style="text-align:center; color:#7f8c8d;">Student: <strong id="display-name"></strong></p>
+    <p style="text-align:center; margin: 20px 0 10px;">Choose which investigation to practise:</p>
+
+    <div class="choice-btn" onclick="startType('emission')">
+      Emission of Infrared<br>
+      <small style="font-weight:normal; color:#7f8c8d;">Leslie Cube – which surface emits most IR?</small>
+    </div>
+    <div class="choice-btn" onclick="startType('absorption')">
+      Absorption of Infrared<br>
+      <small style="font-weight:normal; color:#7f8c8d;">Different coloured surfaces – which absorbs most IR?</small>
+    </div>
+  </div>
+
+  <!-- GAME -->
+  <div id="game-card" class="card" style="display:none;">
+    <div style="text-align:center; margin-bottom:10px;" class="no-print">
+      <button class="btn btn-secondary" onclick="backToChoice()" style="padding:6px 14px; font-size:13px;">← Change Investigation</button>
+    </div>
+
+    <div style="border-bottom:3px solid var(--primary); padding-bottom:12px; margin-bottom:18px; text-align:center;">
+      <h1 id="game-title">Infrared Radiation</h1>
+      <h2 id="game-subtitle">AQA Required Practical</h2>
+      <p style="margin:8px 0 0 0; color:#7f8c8d; font-size:14px;">Student: <strong id="display-name-2"></strong></p>
+    </div>
+
+    <div id="progress-bar-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <div id="visual-box">
+      <div id="visual-content">Infrared Practical</div>
+    </div>
+
+    <div id="prompt-text">Loading...</div>
+    <div class="options-container" id="options-box"></div>
+    <div id="feedback-box"></div>
+    <button id="next-btn" class="btn btn-primary" onclick="advanceStage()" style="display:none; width:100%; margin-top:15px;">Continue →</button>
+
+    <div id="summary-section" style="display:none;"></div>
+  </div>
+
+<script>
+  let studentFirstName = localStorage.getItem('studentFirstName') || "Student";
+  let studentSurname = localStorage.getItem('studentSurname') || "";
+  let currentType = "";
+  let currentStageIndex = 0;
+  let incorrectAttempts = 0;
+  let mistakes = [];
+  let stages = [];
+
+  document.getElementById('display-name').innerText = studentFirstName + " " + studentSurname;
+  document.getElementById('display-name-2').innerText = studentFirstName + " " + studentSurname;
+
+  // ========== EMISSION (Leslie Cube) ==========
+  const emissionStages = [
+    {
+      title: "Leslie Cube",
+      question: "What is a Leslie cube used for in this practical?",
+      options: [
+        { text: "To compare how much infrared radiation is emitted by different surfaces at the same temperature", correct: true },
+        { text: "To measure the specific heat capacity of water", correct: false },
+        { text: "To investigate conduction through metals", correct: false }
+      ],
+      correctAnswer: "To compare how much infrared radiation is emitted by different surfaces at the same temperature",
+      correctFeedback: "Correct! The Leslie cube has different surfaces (e.g. matt black, shiny silver) all at the same temperature.",
+      wrongFeedback: "A Leslie cube allows us to compare infrared emission from different surfaces."
+    },
+    {
+      title: "Best Emitter",
+      question: "Which surface is the best emitter of infrared radiation?",
+      options: [
+        { text: "Matt black", correct: true },
+        { text: "Shiny silver", correct: false },
+        { text: "White", correct: false }
+      ],
+      correctAnswer: "Matt black",
+      correctFeedback: "Correct! Matt black surfaces are the best emitters (and also the best absorbers) of infrared radiation.",
+      wrongFeedback: "Matt black is the best emitter of infrared radiation."
+    },
+    {
+      title: "Worst Emitter",
+      question: "Which surface is the worst emitter of infrared radiation?",
+      options: [
+        { text: "Shiny silver / shiny metallic", correct: true },
+        { text: "Matt black", correct: false },
+        { text: "Matt white", correct: false }
+      ],
+      correctAnswer: "Shiny silver / shiny metallic",
+      correctFeedback: "Correct! Shiny surfaces are poor emitters because they reflect infrared radiation well.",
+      wrongFeedback: "Shiny metallic surfaces are the poorest emitters of infrared."
+    },
+    {
+      title: "Fair Test",
+      question: "Why must the infrared detector be kept at the same distance from each surface of the Leslie cube?",
+      options: [
+        { text: "To make it a fair test – distance affects the amount of radiation detected", correct: true },
+        { text: "So the cube does not cool down", correct: false },
+        { text: "To prevent the detector from overheating", correct: false }
+      ],
+      correctAnswer: "To make it a fair test – distance affects the amount of radiation detected",
+      correctFeedback: "Correct! Distance is a control variable.",
+      wrongFeedback: "Keeping the distance the same ensures a fair test."
+    },
+    {
+      title: "Final Activity: Order the Method (Emission)",
+      question: "Drag the statements into the correct order for the Leslie cube emission experiment.",
+      isSorting: true,
+      statements: [
+        "Place the Leslie cube on a heatproof mat and fill it with very hot water.",
+        "Put the lid on the cube.",
+        "Point the infrared detector at one surface, keeping a fixed distance.",
+        "Record the reading, then rotate the cube and repeat for each different surface.",
+        "Compare the readings to decide which surface is the best emitter of infrared."
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
+      correctFeedback: "Perfect! You have correctly ordered the method.",
+      wrongFeedback: "Not quite right. Try again."
+    }
+  ];
+
+  // ========== ABSORPTION ==========
+  const absorptionStages = [
+    {
+      title: "Aim of Absorption Experiment",
+      question: "What is the aim of the absorption part of this practical?",
+      options: [
+        { text: "To investigate how the nature of a surface affects how well it absorbs infrared radiation", correct: true },
+        { text: "To measure the speed of infrared radiation", correct: false },
+        { text: "To find out which colour reflects the most light", correct: false }
+      ],
+      correctAnswer: "To investigate how the nature of a surface affects how well it absorbs infrared radiation",
+      correctFeedback: "Correct! We compare how well different surfaces absorb infrared.",
+      wrongFeedback: "The aim is to see how surface type affects absorption of infrared."
+    },
+    {
+      title: "Best Absorber",
+      question: "Which surface is the best absorber of infrared radiation?",
+      options: [
+        { text: "Matt black", correct: true },
+        { text: "Shiny silver", correct: false },
+        { text: "White", correct: false }
+      ],
+      correctAnswer: "Matt black",
+      correctFeedback: "Correct! Matt black is the best absorber (and also the best emitter) of infrared radiation.",
+      wrongFeedback: "Matt black surfaces are the best absorbers of infrared."
+    },
+    {
+      title: "Link between Emission and Absorption",
+      question: "What is the relationship between good emitters and good absorbers of infrared radiation?",
+      options: [
+        { text: "Good emitters of infrared are also good absorbers of infrared", correct: true },
+        { text: "Good emitters are poor absorbers", correct: false },
+        { text: "There is no link between emission and absorption", correct: false }
+      ],
+      correctAnswer: "Good emitters of infrared are also good absorbers of infrared",
+      correctFeedback: "Correct! This is an important relationship – matt black is both the best emitter and the best absorber.",
+      wrongFeedback: "Good emitters are also good absorbers of infrared radiation."
+    },
+    {
+      title: "Shiny Surfaces",
+      question: "Why are shiny silver surfaces poor absorbers of infrared radiation?",
+      options: [
+        { text: "They reflect most of the infrared radiation that hits them", correct: true },
+        { text: "They absorb infrared and then conduct it away quickly", correct: false },
+        { text: "They are colder than other surfaces", correct: false }
+      ],
+      correctAnswer: "They reflect most of the infrared radiation that hits them",
+      correctFeedback: "Correct! Shiny surfaces are good reflectors and therefore poor absorbers (and poor emitters).",
+      wrongFeedback: "Shiny surfaces reflect infrared rather than absorbing it."
+    },
+    {
+      title: "Final Activity: Order the Method (Absorption)",
+      question: "Drag the statements into the correct order for a typical absorption experiment.",
+      isSorting: true,
+      statements: [
+        "Set up an infrared heater with two different coloured surfaces (e.g. matt black and shiny silver) at equal distances.",
+        "Start the heater and start timing.",
+        "Measure the temperature rise of each surface (or time how long it takes for wax/pin to melt/fall).",
+        "Record results for both surfaces under the same conditions.",
+        "Compare the results to decide which surface is the better absorber of infrared."
+      ],
+      correctOrder: [0, 1, 2, 3, 4],
+      correctFeedback: "Perfect! You have correctly ordered the method.",
+      wrongFeedback: "Not quite right. Try again."
+    }
+  ];
+
+  function startType(type) {
+    currentType = type;
+    mistakes = [];
+    currentStageIndex = 0;
+
+    if (type === 'emission') {
+      stages = emissionStages;
+      document.getElementById('game-title').innerText = "Infrared Emission";
+      document.getElementById('visual-content').innerText = "📦 Leslie Cube\nComparing emission from different surfaces";
+    } else {
+      stages = absorptionStages;
+      document.getElementById('game-title').innerText = "Infrared Absorption";
+      document.getElementById('visual-content').innerText = "🎨 Different Coloured Surfaces\nComparing absorption of infrared";
+    }
+
+    document.getElementById('choice-screen').style.display = 'none';
+    document.getElementById('game-card').style.display = 'block';
+    renderStage();
+  }
+
+  function backToChoice() {
+    document.getElementById('game-card').style.display = 'none';
+    document.getElementById('choice-screen').style.display = 'block';
+    document.getElementById('summary-section').style.display = 'none';
+    document.getElementById('visual-box').style.display = 'flex';
+    document.getElementById('progress-bar-container').style.display = 'block';
+  }
+
+  function shuffleArray(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function renderStage() {
+    const stage = stages[currentStageIndex];
+    document.getElementById('game-subtitle').innerText = stage.title;
+    document.getElementById('prompt-text').innerHTML = stage.question;
+    document.getElementById('progress-bar').style.width = `${Math.round(((currentStageIndex + 1) / stages.length) * 100)}%`;
+
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    incorrectAttempts = 0;
+
+    if (stage.isSorting) {
+      renderSortingActivity(stage);
+    } else {
+      const shuffledOptions = shuffleArray(stage.options);
+      shuffledOptions.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'btn-option';
+        btn.innerText = opt.text;
+        btn.onclick = () => evaluateAnswer(opt.correct, stage, opt.text);
+        optionsBox.appendChild(btn);
+      });
+    }
+  }
+
+  function renderSortingActivity(stage) {
+    const optionsBox = document.getElementById('options-box');
+    optionsBox.innerHTML = `
+      <ul id="sort-list" ondrop="drop(event)" ondragover="allowDrop(event)"></ul>
+      <button id="check-sort-btn" class="btn btn-primary" onclick="checkSorting()" style="width:100%; margin-top:10px;">Check Order</button>
+    `;
+
+    const list = document.getElementById('sort-list');
+    const statements = shuffleArray([...stage.statements]);
+
+    statements.forEach((text) => {
+      const li = document.createElement('li');
+      li.draggable = true;
+      li.ondragstart = drag;
+      li.innerText = text;
+      li.dataset.index = stage.statements.indexOf(text);
+      list.appendChild(li);
+    });
+  }
+
+  function allowDrop(ev) { ev.preventDefault(); }
+  function drag(ev) { ev.dataTransfer.setData("text", ev.target.dataset.index); }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const dragged = document.querySelector(`li[data-index="${data}"]`);
+    const target = ev.target.closest('li');
+    if (target && dragged !== target) {
+      document.getElementById('sort-list').insertBefore(dragged, target);
+    }
+  }
+
+  function checkSorting() {
+    const stage = stages[currentStageIndex];
+    const listItems = Array.from(document.querySelectorAll('#sort-list li'));
+    const currentOrder = listItems.map(item => parseInt(item.dataset.index));
+    const isCorrect = JSON.stringify(currentOrder) === JSON.stringify(stage.correctOrder);
+
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+      document.getElementById('check-sort-btn').style.display = 'none';
+    } else {
+      incorrectAttempts++;
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback + ` (Attempt ${incorrectAttempts}/5)`;
+
+      if (incorrectAttempts >= 5) {
+        const list = document.getElementById('sort-list');
+        list.innerHTML = '';
+        stage.statements.forEach((text, index) => {
+          const li = document.createElement('li');
+          li.innerText = `${index + 1}. ${text}`;
+          li.classList.add('correct-order');
+          list.appendChild(li);
+        });
+        feedbackBox.className = 'feedback-correct';
+        feedbackBox.innerHTML = `<strong>Correct order shown above.</strong>`;
+        document.getElementById('next-btn').style.display = 'block';
+        document.getElementById('check-sort-btn').style.display = 'none';
+        mistakes.push({
+          stage: stage.title,
+          chosen: "Incorrect order",
+          correct: "See the correct order shown"
+        });
+      } else {
+        setTimeout(() => feedbackBox.style.display = 'none', 2000);
+      }
+    }
+  }
+
+  function evaluateAnswer(isCorrect, stage, chosenText) {
+    const feedbackBox = document.getElementById('feedback-box');
+    feedbackBox.style.display = 'block';
+    document.querySelectorAll('.btn-option').forEach(b => b.disabled = true);
+
+    if (isCorrect) {
+      feedbackBox.className = 'feedback-correct';
+      feedbackBox.innerText = stage.correctFeedback;
+      document.getElementById('next-btn').style.display = 'block';
+    } else {
+      feedbackBox.className = 'feedback-wrong';
+      feedbackBox.innerText = stage.wrongFeedback;
+      mistakes.push({
+        stage: stage.title,
+        chosen: chosenText,
+        correct: stage.correctAnswer
+      });
+      setTimeout(() => {
+        document.querySelectorAll('.btn-option').forEach(b => b.disabled = false);
+      }, 1500);
+    }
+  }
+
+  function advanceStage() {
+    currentStageIndex++;
+    if (currentStageIndex < stages.length) {
+      renderStage();
+    } else {
+      showFinalSummary();
+    }
+  }
+
+  function showFinalSummary() {
+    document.getElementById('prompt-text').innerHTML = `<strong style="font-size:22px;color:#2ecc71;">🎉 Practical Complete!</strong>`;
+    document.getElementById('options-box').innerHTML = '';
+    document.getElementById('feedback-box').style.display = 'none';
+    document.getElementById('next-btn').style.display = 'none';
+    document.getElementById('visual-box').style.display = 'none';
+    document.getElementById('progress-bar-container').style.display = 'none';
+
+    const summarySection = document.getElementById('summary-section');
+    summarySection.style.display = 'block';
+
+    let typeName = currentType === 'emission' ? 'Emission (Leslie Cube)' : 'Absorption';
+
+    let html = `
+      <div style="text-align:center; margin-bottom:20px;">
+        <h2 style="margin:0; color:#2c3e50;">Results Summary</h2>
+        <p style="font-size:18px; margin:8px 0;"><strong>${studentFirstName} ${studentSurname}</strong></p>
+        <p style="color:#7f8c8d; font-size:14px;">Infrared Radiation – ${typeName}</p>
+      </div>
+    `;
+
+    if (mistakes.length === 0) {
+      html += `<p style="color:#27ae60; font-size:16px; text-align:center;">Excellent! You answered everything correctly.</p>`;
+    } else {
+      html += `<p>You made mistakes on the following:</p>`;
+      mistakes.forEach(m => {
+        html += `
+          <div class="summary-item">
+            <strong>${m.stage}</strong><br>
+            You chose: <em>${m.chosen}</em><br>
+            Correct answer: <strong>${m.correct}</strong>
+          </div>`;
+      });
+    }
+
+    html += `
+      <button id="print-btn" class="btn btn-print" onclick="window.print()">🖨️ Print Summary</button>
+      <br><br>
+      <button class="btn btn-secondary" onclick="backToChoice()" style="width:100%;">← Try the Other Investigation</button>
+      <button class="btn btn-secondary" onclick="window.location.href='test.html'" style="width:100%; margin-top:10px;">← Back to Main Menu</button>
+    `;
+
+    summarySection.innerHTML = html;
+  }
+</script>
+</body>
+</html>
